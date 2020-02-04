@@ -13,11 +13,11 @@ var getRandomArrayElement = function (nameOfArray) {
   return nameOfArray[randomElement];
 };
 
-var advertisements = [];
-var avatar = 'img/avatars/user' + getRandomNumber(1, 8) + '.png';
+var advertisements = []; // массив с объявлениями
+var avatar = 'img/avatars/user0' + getRandomNumber(1, 8) + '.png';
 var titles = ['Title1', 'Title2', 'Title3', 'Title4'];
 
-var types = ['palace', 'flat', 'house', 'bungalo'];
+var types = ['Дворец', 'Квартира', 'Дом', 'Бунгало'];
 var checkinTimes = ['12:00', '13:00', '14:00'];
 var checkoutTimes = ['12:00', '13:00', '14:00'];
 
@@ -32,7 +32,7 @@ var getArrayOfRandomLength = function (nameOfArray) {
   nameOfArray.length = getRandomNumber(0, nameOfArray.length);
   return nameOfArray;
 };
-console.log(getArrayOfRandomLength(arrayOfFeatures));
+
 var createArray = function () {
   var advertisement = {
     author: {
@@ -43,13 +43,13 @@ var createArray = function () {
       address: 'address',//строка, адрес предложения. Для простоты пусть пока представляет собой запись вида "{{location.x}}, {{location.y}}", например, "600, 350"
       price: 300,//число, стоимость
       type: getRandomArrayElement(types),
-      rooms: 4,//число, количество комнат
-      guests: 4,//число, количество гостей, которое можно разместить
+      rooms: getRandomNumber(1, 3),//число, количество комнат
+      guests: getRandomNumber(1, 2),//число, количество гостей, которое можно разместить
       checkin: getRandomArrayElement(checkinTimes),
       checkout: getRandomArrayElement(checkoutTimes),
       features: getArrayOfRandomLength(arrayOfFeatures),
-      description: 'description',//строка с описанием,
-      photos: getArrayOfRandomLength(arrayOfPhotos)//массив строк случайной длины, содержащий адреса фотографий "http://o0.github.io/assets/images/tokyo/hotel1.jpg", "http://o0.github.io/assets/images/tokyo/hotel2.jpg", "http://o0.github.io/assets/images/tokyo/hotel3.jpg"
+      description: 'description',//строка с описанием
+      photos: getRandomArrayElement(arrayOfPhotos)//массив строк случайной длины, содержащий адреса фотографий "http://o0.github.io/assets/images/tokyo/hotel1.jpg", "http://o0.github.io/assets/images/tokyo/hotel2.jpg", "http://o0.github.io/assets/images/tokyo/hotel3.jpg"
     },
     location: {
       x: 600,//случайное число, координата x метки на карте. Значение ограничено размерами блока, в котором перетаскивается метка.
@@ -63,26 +63,43 @@ for (var i = 0; i < 8; i++) {
   advertisements[i] = createArray();
 }
 
-var gsss = document.querySelector('.map__pins');
-var advertisementCard = document.querySelector('#card').content.querySelector('.map__card');
+var gsss = document.querySelector('.map__pins'); //блок в который копируем объявления
+var advertisementCard = document.querySelector('#card').content.querySelector('.map__card'); //шаблон, содержимое которого мы будем копировать
 
 var fragment = document.createDocumentFragment();
 
 var renderCard = function (advertisement) {
-  var advertismentElement = advertisementCard.cloneNode(true);
-  
+  var advertismentElement = advertisementCard.cloneNode(true); //клонируем содержимое шаблона
+
   var avatarOfAd = advertismentElement.querySelector('.popup__avatar');
   var titleOfAd = advertismentElement.querySelector('.popup__title');
   var addressOfAd = advertismentElement.querySelector('.popup__text--address');
   
-  avatarOfAd.src.replace(advertisement.author.avatar);
+  var priceOfAd = advertismentElement.querySelector('.popup__text--price');
+  var typeOfAd = advertismentElement.querySelector('.popup__type');
+  var capacityOfAd = advertismentElement.querySelector('.popup__text--capacity');
+  var timeOfAd = advertismentElement.querySelector('.popup__text--time');
+  //features
+  var descriptionOfAd = advertismentElement.querySelector('.popup__description');
+  //var photosOfAd = advertismentElement.querySelector('.popup__photos');
+  
+  avatarOfAd.src = advertisement.author.avatar;
   titleOfAd.textContent = advertisement.offer.title;
   addressOfAd.textContent = advertisement.offer.address;
+  priceOfAd.innerText = advertisement.offer.price;
+  typeOfAd.textContent = advertisement.offer.type;
+  capacityOfAd.textContent = advertisement.offer.rooms + ' комнаты для ' + advertisement.offer.guests + ' гостей';
+  timeOfAd.textContent = 'Заезд после ' + advertisement.offer.checkin + ', выезд до ' + advertisement.offer.checkout;
+  //features
+  descriptionOfAd.textContent = advertisement.offer.description;
+  //photosOfAd.src = advertisement.offer.photos;
+  
   return advertismentElement;
 };
 
-for (i = 0; i < 2; i++) {
-  fragment.appendChild(renderCard(advertisements[i]));
+for (var j = 0; j < advertisements.length; j++) {
+  fragment.appendChild(renderCard(advertisements[j]));
 }
 
 gsss.appendChild(fragment);
+
