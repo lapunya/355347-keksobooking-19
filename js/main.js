@@ -5,7 +5,6 @@ document.querySelector('.map').classList.remove('map--faded');
 var getRandomNumber = function (min, max) {
   var randomNumber = Math.floor(min + Math.random() * (max + 1 - min));
   return randomNumber;
-  //return ('0' + randomNumber);
 };
 
 var getRandomArrayElement = function (array) {
@@ -28,7 +27,10 @@ var photos = [
 ];
 
 var getArrayRandomLength = function (array) {
-  var arrayRandomLength = array;
+  var arrayRandomLength = [];
+  for (var h = 0; h < array.length; h++) {
+    arrayRandomLength.push(array[h]);
+  }
   arrayRandomLength.length = getRandomNumber(0, array.length);
   return arrayRandomLength;
 };
@@ -59,13 +61,6 @@ var createAdvertisement = function (index) {
   return advertisement;
 };
 
-//var createMarker = function () {
-//  var marker = {
-//    avatar: advertisement.author.avatar,
-//    altText: advertisement.offer.title
-//  }
-//};
-
 var advertisementCard = document.querySelector('.map__pins'); //блок в который копируем объявления
 var advertisementTemplate = document.querySelector('#card').content.querySelector('.map__card'); //шаблон, содержимое которого мы будем копировать
 
@@ -84,6 +79,7 @@ var renderCard = function (advertisement) {
   var timeOfAd = advertisementElement.querySelector('.popup__text--time');
   var featuresOfAd = advertisementElement.querySelector('.popup__features');
   var descriptionOfAd = advertisementElement.querySelector('.popup__description');
+  var photosOfAd = advertisementElement.querySelector('.popup__photos');
   
   avatarOfAd.src = advertisement.author.avatar;
   titleOfAd.textContent = advertisement.offer.title;
@@ -94,16 +90,32 @@ var renderCard = function (advertisement) {
   timeOfAd.textContent = 'Заезд после ' + advertisement.offer.checkin + ', выезд до ' + advertisement.offer.checkout;
   featuresOfAd.textContent = advertisement.offer.features;
   descriptionOfAd.textContent = advertisement.offer.description;
-  //photosOfAd.src = advertisement.offer.photos;
+  photosOfAd.src = advertisement.offer.photos;
   
   return advertisementElement;
 };
 
-for (var i = 0; i < 8; i++) {
+//var advertisementMarker = document.querySelector('.map__pin'); 
+//var markerTemplate = document.querySelector('#pin').content;
+
+//var renderMarker = function (advertisement) {
+//  var markerElement = markerTemplate.cloneNode(true);
+//  
+//  var markerPosition = markerElement.querySelector('.map__pin');
+//  
+//  markerPosition.style.left = advertisement.location.x;
+//  markerPosition.style.top = advertisement.location.y;
+//  
+//  return markerElement;
+//};
+
+for (var i = 0; i < 1; i++) {
   var correctIndex = i + 1;
   advertisements[i] = createAdvertisement(correctIndex);
   fragment.appendChild(renderCard(advertisements[i]));
+  //fragment.appendChild(renderMarker(advertisements[i]));
 }
 
+//advertisementMarker.appendChild(fragment);
 advertisementCard.appendChild(fragment);
 
