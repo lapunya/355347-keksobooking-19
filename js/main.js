@@ -54,8 +54,8 @@ var createAdvertisement = function (index) {
       photos: getArrayRandomLength(photos)//массив строк случайной длины, содержащий адреса фотографий "http://o0.github.io/assets/images/tokyo/hotel1.jpg", "http://o0.github.io/assets/images/tokyo/hotel2.jpg", "http://o0.github.io/assets/images/tokyo/hotel3.jpg"
     },
     location: {
-      x: 600,//случайное число, координата x метки на карте. Значение ограничено размерами блока, в котором перетаскивается метка.
-      y: getRandomNumber(130, 630)//случайное число, координата y метки на карте от 130 до 630.
+      x: getRandomNumber(0, 1150),
+      y: getRandomNumber(130, 630)
     }
   };
   return advertisement;
@@ -95,27 +95,30 @@ var renderCard = function (advertisement) {
   return advertisementElement;
 };
 
-//var advertisementMarker = document.querySelector('.map__pin'); 
-//var markerTemplate = document.querySelector('#pin').content;
+var adMarker = document.querySelector('.map__pin');
+var markerTemplate = document.querySelector('#pin').content;
 
-//var renderMarker = function (advertisement) {
-//  var markerElement = markerTemplate.cloneNode(true);
-//  
-//  var markerPosition = markerElement.querySelector('.map__pin');
-//  
-//  markerPosition.style.left = advertisement.location.x;
-//  markerPosition.style.top = advertisement.location.y;
-//  
-//  return markerElement;
-//};
+var renderMarker = function (advertisement) {
+  var markerElement = markerTemplate.cloneNode(true);
+  
+  var avatarOfMarker = markerElement.querySelector('img');
+  var coorOfMarker = markerElement.querySelector('.map__pin');
+  
+  avatarOfMarker.src = advertisement.author.avatar;
+  avatarOfMarker.alt = advertisement.offer.title;
+  coorOfMarker.style.left = advertisement.location.x + 'px';
+  coorOfMarker.style.top = advertisement.location.y + 'px';
+  
+  return markerElement;
+  
+}
 
-for (var i = 0; i < 1; i++) {
+for (var i = 0; i < 8; i++) {
   var correctIndex = i + 1;
   advertisements[i] = createAdvertisement(correctIndex);
   fragment.appendChild(renderCard(advertisements[i]));
-  //fragment.appendChild(renderMarker(advertisements[i]));
+  fragment.appendChild(renderMarker(advertisements[i]));
 }
 
-//advertisementMarker.appendChild(fragment);
 advertisementCard.appendChild(fragment);
 
