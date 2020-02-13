@@ -13,6 +13,10 @@ var getRandomArrayElement = function (array) {
 };
 
 var advertisements = []; // массив с объявлениями
+var mapPinsElement = document.querySelector('.map__pins');
+var mapWidth = mapPinsElement.offsetWidth;
+
+var mapHeight = mapPinsElement.offsetHeight;
 var titles = ['Title1', 'Title2', 'Title3', 'Title4'];
 var types = ['Дворец', 'Квартира', 'Дом', 'Бунгало'];
 
@@ -50,12 +54,12 @@ var createAdvertisement = function (index) {
       checkin: getRandomArrayElement(checkinTimes),
       checkout: getRandomArrayElement(checkoutTimes),
       features: getArrayRandomLength(features),
-      description: 'description',//строка с описанием
-      photos: getArrayRandomLength(photos)//массив строк случайной длины, содержащий адреса фотографий "http://o0.github.io/assets/images/tokyo/hotel1.jpg", "http://o0.github.io/assets/images/tokyo/hotel2.jpg", "http://o0.github.io/assets/images/tokyo/hotel3.jpg"
+      description: 'description',
+      photos: getArrayRandomLength(photos)
     },
     location: {
-      x: getRandomNumber(0, 1150),
-      y: getRandomNumber(130, 630)
+      x: getRandomNumber(0, mapWidth),
+      y: getRandomNumber(130, mapHeight)
     }
   };
   return advertisement;
@@ -76,22 +80,47 @@ var renderCard = function (advertisement) {
   var priceOfAd = advertisementElement.querySelector('.popup__text--price');
   var typeOfAd = advertisementElement.querySelector('.popup__type');
   var capacityOfAd = advertisementElement.querySelector('.popup__text--capacity');
+  
   var timeOfAd = advertisementElement.querySelector('.popup__text--time');
   var featuresOfAd = advertisementElement.querySelector('.popup__features');
+  
   var descriptionOfAd = advertisementElement.querySelector('.popup__description');
   var photosOfAd = advertisementElement.querySelector('.popup__photos');
+  var photoOfAd = advertisementElement.querySelector('.popup__photo');
   
   avatarOfAd.src = advertisement.author.avatar;
   titleOfAd.textContent = advertisement.offer.title;
   addressOfAd.textContent = advertisement.offer.address;
-  priceOfAd.innerText = advertisement.offer.price;
+  priceOfAd.textContent = advertisement.offer.price + '₽/ночь';
   typeOfAd.textContent = advertisement.offer.type;
   capacityOfAd.textContent = advertisement.offer.rooms + ' комнаты для ' + advertisement.offer.guests + ' гостей';
   timeOfAd.textContent = 'Заезд после ' + advertisement.offer.checkin + ', выезд до ' + advertisement.offer.checkout;
-  featuresOfAd.textContent = advertisement.offer.features;
-  descriptionOfAd.textContent = advertisement.offer.description;
-  photosOfAd.src = advertisement.offer.photos;
   
+  for (var f = 0; f < advertisement.offer.features.length; f++) {
+    var feature = advertisement.offer.features[f];
+    var featureOfAd = document.createElement('li');
+    
+    featureOfAd.classList.add('popup__feature');
+    var classModifier = 'popup__feature--' + feature;
+    
+    featureOfAd.classList.add(classModifier);
+    fragment.appendChild(featureOfAd);
+  }
+  
+  featuresOfAd.appendChild(fragment);
+  
+  descriptionOfAd.textContent = advertisement.offer.description;
+  photoOfAd.src = advertisement.offer.photos[0];
+  
+  for (var p = 1; p < advertisement.offer.photos.length; p++) {
+    var photoSource = advertisement.offer.photos[p];
+    
+    var imageElement = photoOfAd.cloneNode(true);
+    
+    imageElement.src = photoSource;
+    photosOfAd.appendChild(imageElement);
+  }
+  console.log(advertisement.offer.photos);
   return advertisementElement;
 };
 
@@ -116,9 +145,9 @@ var renderMarker = function (advertisement) {
 for (var i = 0; i < 8; i++) {
   var correctIndex = i + 1;
   advertisements[i] = createAdvertisement(correctIndex);
-  fragment.appendChild(renderCard(advertisements[i]));
   fragment.appendChild(renderMarker(advertisements[i]));
 }
 
+fragment.appendChild(renderCard(advertisements[getRandomNumber(0, 7)]));
 advertisementCard.appendChild(fragment);
 
