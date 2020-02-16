@@ -233,4 +233,3 @@ var renderMarker = function (advertisement) {
 
 //fragment.appendChild(renderCard(advertisements[getRandomNumber(0, 7)]));
 //advertisementCard.appendChild(fragment);
-
