@@ -1,12 +1,11 @@
 'use strict';
 
-//-----------------------------------------------Переключение в активное состояние----------------------------------//
-var ENTER_KEY = 'Enter';
-
+var map = document.querySelector('.map');
 var adForm = document.querySelector('.ad-form');
 var adFormFields = adForm.querySelectorAll('fieldset');
 var mainPin = document.querySelector('.map__pin--main');
 
+var ENTER_KEY = 'Enter';
 var MAIN_PIN_WIDTH = mainPin.offsetWidth;
 var MAIN_PIN_HEIGHT = mainPin.offsetHeight;
 
@@ -18,34 +17,22 @@ var inputAddress = adForm.querySelector('#address');
 
 inputAddress.value = mainPinX  + ', ' + inactiveMainPinY; //заполнение поля адреса в неактивном состоянии
 
-var inactiveState = function () {
-  for (var fieldIndex = 0; fieldIndex < adFormFields.length; fieldIndex++) { //неактивное состояние страницы
+var setInactiveState = function () {//неактивное состояние страницы
+  for (var fieldIndex = 0; fieldIndex < adFormFields.length; fieldIndex++) { 
     adFormFields[fieldIndex].disabled = true;
   }
 };
 
-var activeState = function () {
-  for (var fieldIndex = 0; fieldIndex < adFormFields.length; fieldIndex++) { //активное состояние страницы
+var setActiveState = function () {//активное состояние страницы
+  adForm.classList.remove('ad-form--disabled');
+  map.classList.remove('map--faded');
+  for (var fieldIndex = 0; fieldIndex < adFormFields.length; fieldIndex++) { 
     adFormFields[fieldIndex].disabled = false;
   }
   inputAddress.value = mainPinX  + ', ' + activeMainPinY;
 };
 
-inactiveState();
-
-mainPin.addEventListener('mousedown', function (evt) {
-  if (evt.which === 1) {
-    activeState();
-  }
-});
-
-mainPin.addEventListener('keydown', function (evt) {
-  if (evt.key === ENTER_KEY) {
-    activeState();
-  }
-});
-
-//----------------------------------Валидация формы-----------------------------------------------------------//
+setInactiveState();
 
 var roomsInput = adForm.querySelector('#room_number');
 var guestsInput = adForm.querySelector('#capacity');
@@ -63,24 +50,13 @@ var getSelectedOption = function (selectArray) { //Функция нахожде
   }
 };
 
-var getValidForm = function () {
-  for (var z = 0; z < roomsArray.length; z++) {
-    if (getSelectedOption(roomsArray).value < guestsArray[z].value) {
-      guestsArray[z].disabled = true;
-    }
+guestsInput.addEventListener('input', function () {
+  if (getSelectedOption(guestsArray).value > getSelectedOption(roomsArray).value) {
+    guestsInput.setCustomValidity('Количество гостей не должно превышать количество комнат');
+  } else {
+    guestsInput.setCustomValidity('');
   }
-};
-
-getValidForm();
-
-roomsInput.addEventListener('input', function () {
-  for (var q = 0; q < guestsArray.length; q++) {
-    guestsArray[q].disabled = false;
-  }
-  getValidForm();
-});
-
-//-------------------------------------------Рендер объявления и меток---------------------------------------//
+}); 
 
 var getRandomNumber = function (min, max) {
   var randomNumber = Math.floor(min + Math.random() * (max + 1 - min));
@@ -203,7 +179,6 @@ var renderCard = function (advertisement) {
     imageElement.src = photoSource;
     photosOfAd.appendChild(imageElement);
   }
-  console.log(advertisement.offer.photos);
   return advertisementElement;
 };
 
@@ -225,11 +200,24 @@ var renderMarker = function (advertisement) {
 
 }
 
-//for (var i = 0; i < 8; i++) {
-//  var correctIndex = i + 1;
-//  advertisements[i] = createAdvertisement(correctIndex);
-//  fragment.appendChild(renderMarker(advertisements[i]));
-//}
+for (var i = 0; i < 8; i++) {
+  var correctIndex = i + 1;
+  advertisements[i] = createAdvertisement(correctIndex);
+  fragment.appendChild(renderMarker(advertisements[i]));
+}
 
-//fragment.appendChild(renderCard(advertisements[getRandomNumber(0, 7)]));
-//advertisementCard.appendChild(fragment);
+mainPin.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    setActiveState();
+    advertisementCard.appendChild(fragment);
+  }
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    setActiveState();
+    advertisementCard.appendChild(fragment);
+  }
+});
+
+
