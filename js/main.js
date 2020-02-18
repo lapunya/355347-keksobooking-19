@@ -158,7 +158,7 @@ var renderCard = function (advertisement) {
     var classModifier = 'popup__feature--' + feature;
 
     featureOfAd.classList.add(classModifier);
-    featuresOfAd.appendChild(featureOfAd);
+    fragment.appendChild(featureOfAd);
   }
 
   featuresOfAd.appendChild(fragment);
@@ -182,7 +182,6 @@ var renderCard = function (advertisement) {
   return advertisementElement;
 };
 
-var adMarker = document.querySelector('.map__pin');
 var markerTemplate = document.querySelector('#pin').content;
 
 var renderMarker = function (advertisement) {
@@ -198,7 +197,7 @@ var renderMarker = function (advertisement) {
 
   return markerElement;
 
-}
+};
 
 for (var i = 0; i < 8; i++) {
   var correctIndex = i + 1;
@@ -206,10 +205,25 @@ for (var i = 0; i < 8; i++) {
   fragment.appendChild(renderMarker(advertisements[i]));
 }
 
+var getAllPins = function () {
+  if (!(map.classList.contains('map--faded'))) {
+    var mapPins = document.querySelectorAll('.map__pin');
+    return mapPins;
+  }
+};
+
 mainPin.addEventListener('mousedown', function (evt) {
   if (evt.button === 0) {
     setActiveState();
     advertisementCard.appendChild(fragment);
+    var mapPins = document.querySelectorAll('.map__pin');
+    for (var pinIndex = 1; pinIndex < mapPins.length; pinIndex++) {
+      var pin = mapPins[pinIndex];
+      pin.addEventListener('click', function () {
+        fragment.appendChild(renderCard(advertisements[1]));
+        advertisementCard.appendChild(fragment);
+      });
+    }
   }
 });
 
@@ -219,5 +233,4 @@ mainPin.addEventListener('keydown', function (evt) {
     advertisementCard.appendChild(fragment);
   }
 });
-
 
