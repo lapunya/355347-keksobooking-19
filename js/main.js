@@ -127,57 +127,59 @@ var fragment = document.createDocumentFragment();
 var renderCard = function (advertisement) {
   var advertisementElement = advertisementTemplate.cloneNode(true); //клонируем содержимое шаблона
 
-  var avatarOfAd = advertisementElement.querySelector('.popup__avatar');
-  var titleOfAd = advertisementElement.querySelector('.popup__title');
-  var addressOfAd = advertisementElement.querySelector('.popup__text--address');
+  var avatar = advertisementElement.querySelector('.popup__avatar');
+  var title = advertisementElement.querySelector('.popup__title');
+  var address = advertisementElement.querySelector('.popup__text--address');
 
-  var priceOfAd = advertisementElement.querySelector('.popup__text--price');
-  var typeOfAd = advertisementElement.querySelector('.popup__type');
-  var capacityOfAd = advertisementElement.querySelector('.popup__text--capacity');
+  var price = advertisementElement.querySelector('.popup__text--price');
+  var type = advertisementElement.querySelector('.popup__type');
+  var capacity = advertisementElement.querySelector('.popup__text--capacity');
 
-  var timeOfAd = advertisementElement.querySelector('.popup__text--time');
-  var featuresOfAd = advertisementElement.querySelector('.popup__features');
+  var time = advertisementElement.querySelector('.popup__text--time');
+  var features = advertisementElement.querySelector('.popup__features');
 
-  var descriptionOfAd = advertisementElement.querySelector('.popup__description');
-  var photosOfAd = advertisementElement.querySelector('.popup__photos');
-  var photoOfAd = advertisementElement.querySelector('.popup__photo');
+  var description = advertisementElement.querySelector('.popup__description');
+  var photos = advertisementElement.querySelector('.popup__photos');
+  var photo = advertisementElement.querySelector('.popup__photo');
 
-  avatarOfAd.src = advertisement.author.avatar;
-  titleOfAd.textContent = advertisement.offer.title;
-  addressOfAd.textContent = advertisement.offer.address;
-  priceOfAd.textContent = advertisement.offer.price + '₽/ночь';
-  typeOfAd.textContent = advertisement.offer.type;
-  capacityOfAd.textContent = advertisement.offer.rooms + ' комнаты для ' + advertisement.offer.guests + ' гостей';
-  timeOfAd.textContent = 'Заезд после ' + advertisement.offer.checkin + ', выезд до ' + advertisement.offer.checkout;
+  avatar.src = advertisement.author.avatar;
+  title.textContent = advertisement.offer.title;
+  address.textContent = advertisement.offer.address;
+  price.textContent = advertisement.offer.price + '₽/ночь';
+  type.textContent = advertisement.offer.type;
+  capacity.textContent = advertisement.offer.rooms + ' комнаты для ' + advertisement.offer.guests + ' гостей';
+  time.textContent = 'Заезд после ' + advertisement.offer.checkin + ', выезд до ' + advertisement.offer.checkout;
+
+  features.innerHTML = '';
 
   for (var f = 0; f < advertisement.offer.features.length; f++) {
-    var feature = advertisement.offer.features[f];
-    var featureOfAd = document.createElement('li');
+    var newFeature = advertisement.offer.features[f];
+    var feature = document.createElement('li');
 
-    featureOfAd.classList.add('popup__feature');
-    var classModifier = 'popup__feature--' + feature;
+    feature.classList.add('popup__feature');
+    var classModifier = 'popup__feature--' + newFeature;
 
-    featureOfAd.classList.add(classModifier);
-    fragment.appendChild(featureOfAd);
+    feature.classList.add(classModifier);
+    fragment.appendChild(feature);
   }
 
-  featuresOfAd.appendChild(fragment);
+  features.appendChild(fragment);
 
-  descriptionOfAd.textContent = advertisement.offer.description;
+  description.textContent = advertisement.offer.description;
 
   if (advertisement.offer.photos.length < 1) {
-    photosOfAd.textContent = 'Фотографий нет';
-    photoOfAd.remove();
+    photos.textContent = 'Фотографий нет';
+    photo.remove();
   }
-  photoOfAd.src = advertisement.offer.photos[0];
+  photo.src = advertisement.offer.photos[0];
 
   for (var p = 1; p < advertisement.offer.photos.length; p++) {
     var photoSource = advertisement.offer.photos[p];
 
-    var imageElement = photoOfAd.cloneNode(true);
+    var imageElement = photo.cloneNode(true);
 
     imageElement.src = photoSource;
-    photosOfAd.appendChild(imageElement);
+    photos.appendChild(imageElement);
   }
   return advertisementElement;
 };
@@ -205,32 +207,47 @@ for (var i = 0; i < 8; i++) {
   fragment.appendChild(renderMarker(advertisements[i]));
 }
 
-var getAllPins = function () {
-  if (!(map.classList.contains('map--faded'))) {
-    var mapPins = document.querySelectorAll('.map__pin');
-    return mapPins;
+var appendPinElements = function () {
+
+  advertisementCard.appendChild(fragment);//рендер маркеров на карту
+
+  var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');//запись коллекции маркеров в переменную, кроме главного маркера
+
+  for (var y = 0; y < mapPins.length; y++) {
+    var pin = mapPins[y];
+  
+    (function () {
+      var index = y;
+    
+      var onPinClick = function () {
+        var currentCard = advertisementCard.querySelector('.map__card');
+        
+        if (currentCard) {
+          currentCard.remove();
+        }
+        
+        fragment.appendChild(renderCard(advertisements[index]));
+        advertisementCard.appendChild(fragment);
+      };
+      
+      pin.addEventListener('click', onPinClick); 
+    }());
+  };
+};
+
+var onActiveMouse = function (evt) {
+  if (evt.button === 0) {
+    setActiveState();
+    appendPinElements();
   }
 };
 
-mainPin.addEventListener('mousedown', function (evt) {
-  if (evt.button === 0) {
-    setActiveState();
-    advertisementCard.appendChild(fragment);
-    var mapPins = document.querySelectorAll('.map__pin');
-    for (var pinIndex = 1; pinIndex < mapPins.length; pinIndex++) {
-      var pin = mapPins[pinIndex];
-      pin.addEventListener('click', function () {
-        fragment.appendChild(renderCard(advertisements[1]));
-        advertisementCard.appendChild(fragment);
-      });
-    }
-  }
-});
-
-mainPin.addEventListener('keydown', function (evt) {
+var onActiveKey = function (evt) {
   if (evt.key === ENTER_KEY) {
     setActiveState();
-    advertisementCard.appendChild(fragment);
+    appendPinElements();
   }
-});
+};
 
+mainPin.addEventListener('mousedown', onActiveMouse);
+mainPin.addEventListener('keydown', onActiveKey);
