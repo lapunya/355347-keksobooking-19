@@ -228,9 +228,21 @@ var appendPinElements = function () {
         
         fragment.appendChild(renderCard(advertisements[index]));
         advertisementCard.appendChild(fragment);
+        
+        var closeButton = document.querySelector('.popup__close');
+        
+        (function () {
+          var currentCard = advertisementCard.querySelector('.map__card');
+          
+          var onCloseClick = function () {
+            currentCard.remove();
+          };
+          
+          closeButton.addEventListener('click', onCloseClick);
+        }());
       };
       
-      pin.addEventListener('click', onPinClick); 
+      pin.addEventListener('click', onPinClick);     
     }());
   };
 };
@@ -251,3 +263,29 @@ var onActiveKey = function (evt) {
 
 mainPin.addEventListener('mousedown', onActiveMouse);
 mainPin.addEventListener('keydown', onActiveKey);
+
+
+var houseTypeInput = document.querySelector('#type');
+var housePriceInput = document.querySelector('#price');
+
+houseTypeInput.addEventListener('input', function () {
+  var houseType = getSelectedOption(houseTypeInput).value;
+  var housePriceMin = housePriceInput.min;
+  switch (houseType) {
+    case 'bungalo':
+    housePriceMin = 0;
+    break;
+
+    case 'flat':
+    housePriceMin = 1000;
+    break;
+
+    case 'house':
+    housePriceMin = 5000; 
+    break;
+
+    case 'palace':
+    housePriceMin = 10000;
+    break;  
+  }
+});
