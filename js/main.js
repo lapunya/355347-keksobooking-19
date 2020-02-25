@@ -5,6 +5,7 @@ var adForm = document.querySelector('.ad-form');
 var adFormFields = adForm.querySelectorAll('fieldset');
 var mainPin = document.querySelector('.map__pin--main');
 
+var ESC_KEY = 'Escape';
 var ENTER_KEY = 'Enter';
 var MAIN_PIN_WIDTH = mainPin.offsetWidth;
 var MAIN_PIN_HEIGHT = mainPin.offsetHeight;
@@ -50,7 +51,7 @@ var getSelectedOption = function (selectArray) { //Функция нахожде
   }
 };
 
-guestsInput.addEventListener('input', function () {
+guestsInput.addEventListener('input', function () { // Валидация поля с количеством гостей и поля с количеством комнат 
   if (getSelectedOption(guestsArray).value > getSelectedOption(roomsArray).value) {
     guestsInput.setCustomValidity('Количество гостей не должно превышать количество комнат');
   } else {
@@ -93,7 +94,7 @@ var getArrayRandomLength = function (array) {
   return arrayRandomLength;
 };
 
-var createAdvertisement = function (index) {
+var createAdvertisement = function (index) { // Функция создания объявления
   var advertisement = {
     author: {
       avatar: 'img/avatars/user0' + index + '.png'
@@ -124,7 +125,7 @@ var advertisementTemplate = document.querySelector('#card').content.querySelecto
 
 var fragment = document.createDocumentFragment();
 
-var renderCard = function (advertisement) {
+var renderCard = function (advertisement) { // Функция отрисовки карточки объявления
   var advertisementElement = advertisementTemplate.cloneNode(true); //клонируем содержимое шаблона
 
   var avatar = advertisementElement.querySelector('.popup__avatar');
@@ -186,7 +187,7 @@ var renderCard = function (advertisement) {
 
 var markerTemplate = document.querySelector('#pin').content;
 
-var renderMarker = function (advertisement) {
+var renderMarker = function (advertisement) { // Функция отрисовки маркера
   var markerElement = markerTemplate.cloneNode(true);
 
   var avatarOfMarker = markerElement.querySelector('img');
@@ -236,9 +237,18 @@ var appendPinElements = function () {
           
           var onCloseClick = function () {
             currentCard.remove();
+            closeButton.removeEventListener('click', onCloseClick);
+          };
+          
+          var onEscPress = function (evt) {
+            if (evt.key === ESC_KEY) {
+              currentCard.remove();
+              document.removeEventListener('keydown', onEscPress);
+            }
           };
           
           closeButton.addEventListener('click', onCloseClick);
+          document.addEventListener('keydown', onEscPress);
         }());
       };
       
