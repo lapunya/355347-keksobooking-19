@@ -51,9 +51,34 @@ var getSelectedOption = function (selectArray) { //Функция нахожде
   }
 };
 
+var validateRoomRuleGuest = {
+  '100': function (value) {
+    return value == 0;
+  },
+  '1': function (value) {
+    return value == 1;
+  },
+  '2': function (value) {
+    return value == 1 || value == 2;
+  },
+  '3': function (value) {
+    return value == 1 || value == 2 || value == 3;
+  }
+};
+
 guestsInput.addEventListener('input', function () { // Валидация поля с количеством гостей и поля с количеством комнат 
-  if (getSelectedOption(guestsArray).value > getSelectedOption(roomsArray).value) {
-    guestsInput.setCustomValidity('Количество гостей не должно превышать количество комнат');
+  var guests = getSelectedOption(guestsArray);
+  var rooms = getSelectedOption(roomsArray);
+
+  var guestValue = guests.value;
+  var roomValue = rooms.value;
+
+  var validateMethod = validateRoomRuleGuest[roomValue];
+
+  var isValidInput = validateMethod(guestValue);
+
+  if (!isValidInput) {
+    guestsInput.setCustomValidity('Число гостей не должно превышать количество комнат');
   } else {
     guestsInput.setCustomValidity('');
   }
@@ -280,22 +305,26 @@ var housePriceInput = document.querySelector('#price');
 
 houseTypeInput.addEventListener('input', function () {
   var houseType = getSelectedOption(houseTypeInput).value;
-  var housePriceMin = housePriceInput.min;
+  
   switch (houseType) {
     case 'bungalo':
-    housePriceMin = 0;
+    housePriceInput.min = 0;
+    housePriceInput.placeholder = 0;
     break;
 
     case 'flat':
-    housePriceMin = 1000;
+    housePriceInput.min = 1000;
+    housePriceInput.placeholder = 1000;
     break;
 
     case 'house':
-    housePriceMin = 5000; 
+    housePriceInput.min = 5000;
+    housePriceInput.placeholder = 5000;  
     break;
 
     case 'palace':
-    housePriceMin = 10000;
+    housePriceInput.min = 10000;
+    housePriceInput.placeholder = 10000;  
     break;  
   }
 });
