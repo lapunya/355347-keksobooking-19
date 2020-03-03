@@ -33,6 +33,7 @@
   };
 
   window.page = {
+    inputAddress: inputAddress,
     setInactiveState: setInactiveState,
     setActiveState: setActiveState
   };

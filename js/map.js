@@ -67,9 +67,48 @@
   window.page.setInactiveState();
 
   var onActiveMouse = function (evt) {
+    evt.preventDefault();
+
     if (evt.button === 0) {
       window.page.setActiveState();
       appendPinElements();
+
+      var startCoords = {
+        x: evt.clientX,
+        y: evt.clientY
+      };
+
+      window.page.inputAddress.value = startCoords.x + ', ' + startCoords.y;
+
+      var onMouseMove = function (moveEvt) {
+        evt.preventDefault();
+
+        var shift = {
+          x: startCoords.x - moveEvt.clientX,
+          y: startCoords.y - moveEvt.clientY
+        };
+
+        startCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+
+        mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+
+        window.page.inputAddress.value = startCoords.x + ', ' + startCoords.y;
+
+      };
+
+      var onMouseUp = function (upEvt) {
+        upEvt.preventDefault();
+
+        advertisementCard.removeEventListener('mousemove', onMouseMove);
+        advertisementCard.removeEventListener('mouseup', onMouseUp);
+      };
+
+      advertisementCard.addEventListener('mousemove', onMouseMove);
+      advertisementCard.addEventListener('mouseup', onMouseUp);
     }
   };
 
