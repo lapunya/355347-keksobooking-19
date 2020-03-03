@@ -33,8 +33,8 @@
   };
 
   window.page = {
-    inactive: setInactiveState,
-    active: setActiveState
+    setInactiveState: setInactiveState,
+    setActiveState: setActiveState
   };
 
 })();
