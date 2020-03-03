@@ -9,8 +9,9 @@
 
   for (var i = 0; i < 8; i++) {
     var correctIndex = i + 1;
-    advertisements[i] = window.adv.create(correctIndex);
-    fragment.appendChild(window.pin.create(advertisements[i]));
+    advertisements[i] = window.advertisement.create(correctIndex);
+    var newPin = window.pin.create(advertisements[i]);
+    fragment.appendChild(newPin);
   }
 
   var advertisementCard = document.querySelector('.map__pins'); // блок в который копируем объявления
@@ -63,18 +64,18 @@
     }
   };
 
-  window.page.inactive();
+  window.page.setInactiveState();
 
   var onActiveMouse = function (evt) {
     if (evt.button === 0) {
-      window.page.active();
+      window.page.setActiveState();
       appendPinElements();
     }
   };
 
   var onActiveKey = function (evt) {
     if (evt.key === ENTER_KEY) {
-      window.page.active();
+      window.page.setActiveState();
       appendPinElements();
     }
   };
