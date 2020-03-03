@@ -30,10 +30,8 @@
     address.textContent = advertisement.offer.address;
     price.textContent = advertisement.offer.price + '₽/ночь';
     type.textContent = advertisement.offer.type;
-    capacity.textContent =
-      advertisement.offer.rooms + ' комнаты для ' + advertisement.offer.guests + ' гостей';
-    time.textContent = 'Заезд после ' + advertisement.offer.checkin + ', выезд до ' +
-      advertisement.offer.checkout;
+    capacity.textContent = advertisement.offer.rooms + ' комнаты для ' + advertisement.offer.guests + ' гостей';
+    time.textContent = 'Заезд после ' + advertisement.offer.checkin + ', выезд до ' + advertisement.offer.checkout;
 
     features.innerHTML = '';
 
@@ -56,10 +54,11 @@
       photos.textContent = 'Фотографий нет';
       photo.remove();
     }
+
     photo.src = advertisement.offer.photos[0];
 
-    for (var p = 1; p < advertisement.offer.photos.length; p++) {
-      var photoSource = advertisement.offer.photos[p];
+    for (var i = 1; i < advertisement.offer.photos.length; i++) {
+      var photoSource = advertisement.offer.photos[i];
 
       var imageElement = photo.cloneNode(true);
 

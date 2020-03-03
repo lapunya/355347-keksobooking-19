@@ -21,11 +21,11 @@
   ];
 
   window.data = {
-    title: titles,
-    type: types,
-    checkinTime: checkinTimes,
-    checkoutTime: checkoutTimes,
-    feature: features,
-    photo: photos
+    advertisementTitles: titles,
+    advertisementTypes: types,
+    checkinTimes: checkinTimes,
+    checkoutTimes: checkoutTimes,
+    advertisementFeatures: features,
+    advertisementPhotos: photos
   };
 })();
