@@ -13,16 +13,16 @@
 
   var validateRoomRuleGuest = {
     '100': function (value) {
-      return value == 0;
+      return value === 0;
     },
     '1': function (value) {
-      return value == 1;
+      return value === 1;
     },
     '2': function (value) {
-      return value == 1 || value == 2;
+      return value === 1 || value === 2;
     },
     '3': function (value) {
-      return value == 1 || value == 2 || value == 3;
+      return value === 1 || value === 2 || value === 3;
     }
   };
 
@@ -30,7 +30,7 @@
     var guests = window.util.getSelectedOption(guestsArray);
     var rooms = window.util.getSelectedOption(roomsArray);
 
-    var guestValue = guests.value;
+    var guestValue = Number(guests.value);
     var roomValue = rooms.value;
 
     var validateMethod = validateRoomRuleGuest[roomValue];
