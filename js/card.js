@@ -35,8 +35,7 @@
 
     features.innerHTML = '';
 
-    for (var f = 0; f < advertisement.offer.features.length; f++) {
-      var newFeature = advertisement.offer.features[f];
+    advertisement.offer.features.forEach(function (newFeature) {
       var feature = document.createElement('li');
 
       feature.classList.add('popup__feature');
@@ -44,7 +43,7 @@
 
       feature.classList.add(classModifier);
       fragment.appendChild(feature);
-    }
+    });
 
     features.appendChild(fragment);
 
