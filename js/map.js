@@ -68,6 +68,8 @@
 
   var onActiveMouse = function (evt) {
     evt.preventDefault();
+    var mapBound = advertisementCard.getBoundingClientRect();
+    var scrollY = window.scrollY;
 
     if (evt.button === 0) {
       window.page.setActiveState();
@@ -78,7 +80,7 @@
         y: evt.clientY
       };
 
-      window.page.inputAddress.value = startCoords.x + ', ' + startCoords.y;
+      window.page.inputAddress.value = startCoords.x + ', ' + (startCoords.y + scrollY);
 
       var onMouseMove = function (moveEvt) {
         evt.preventDefault();
@@ -93,22 +95,24 @@
           y: moveEvt.clientY
         };
 
+        if (startCoords.x <= mapBound.left || startCoords.x >= mapBound.right || startCoords.y < mapBound.top + 130 || startCoords.y + scrollY > 630) {
+          return;
+        }
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
 
-        window.page.inputAddress.value = startCoords.x + ', ' + startCoords.y;
-
+        window.page.inputAddress.value = startCoords.x + ', ' + (startCoords.y + scrollY);
       };
 
       var onMouseUp = function (upEvt) {
         upEvt.preventDefault();
 
-        advertisementCard.removeEventListener('mousemove', onMouseMove);
-        advertisementCard.removeEventListener('mouseup', onMouseUp);
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
       };
 
-      advertisementCard.addEventListener('mousemove', onMouseMove);
-      advertisementCard.addEventListener('mouseup', onMouseUp);
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
     }
   };
 
