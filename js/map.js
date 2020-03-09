@@ -1,7 +1,6 @@
 'use strict';
 (function () {
   var mainPin = document.querySelector('.map__pin--main');
-  var ESC_KEY = 'Escape';
   var ENTER_KEY = 'Enter';
 
   var advertisements = []; // массив с объявлениями
@@ -42,19 +41,16 @@
           (function () {
             var currentCard = advertisementCard.querySelector('.map__card');
 
-            var onCloseClick = function () {
+            var closeCard = function () {
               currentCard.remove();
-              closeButton.removeEventListener('click', onCloseClick);
+              closeButton.removeEventListener('keydown', onEscPress);
             };
 
             var onEscPress = function (evt) {
-              if (evt.key === ESC_KEY) {
-                currentCard.remove();
-                document.removeEventListener('keydown', onEscPress);
-              }
+              window.util.isEscPress(evt, closeCard);
             };
 
-            closeButton.addEventListener('click', onCloseClick);
+            closeButton.addEventListener('click', closeCard);
             document.addEventListener('keydown', onEscPress);
           })();
         };

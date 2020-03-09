@@ -1,6 +1,14 @@
 'use strict';
 
 (function () {
+  var ESC_KEY = 'Escape';
+
+  var isEscPress = function (evt, action) {
+    if (evt.key === ESC_KEY) {
+      action();
+    }
+  };
+
   var getRandomNumber = function (min, max) {
     var randomNumber = Math.floor(min + Math.random() * (max + 1 - min));
     return randomNumber;
@@ -31,6 +39,7 @@
   };
 
   window.util = {
+    isEscPress: isEscPress,
     getRandomNumber: getRandomNumber,
     getRandomArrayElement: getRandomArrayElement,
     getArrayRandomLength: getArrayRandomLength,
