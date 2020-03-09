@@ -33,6 +33,8 @@
   };
 
   var setupApplication = function () {
+    window.map.install();
+    window.form.install();
     setInactiveState();
   };
 

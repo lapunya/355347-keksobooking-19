@@ -92,7 +92,13 @@
       window.pin.render(advertisementCard, fragment, advertisements);
     }
   };
+  var installMap = function () {
+    mainPin.addEventListener('mousedown', onActiveMouse);
+    mainPin.addEventListener('keydown', onActiveKey);
+  };
 
-  mainPin.addEventListener('mousedown', onActiveMouse);
-  mainPin.addEventListener('keydown', onActiveKey);
+  window.map = {
+    install: installMap
+  };
+
 })();
