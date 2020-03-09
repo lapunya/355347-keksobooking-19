@@ -32,7 +32,13 @@
     inputAddress.value = mainPinX + ', ' + activeMainPinY;
   };
 
-  window.page = {
+  var setupApplication = function () {
+    setInactiveState();
+  };
+
+  setupApplication();
+
+  window.main = {
     inputAddress: inputAddress,
     setInactiveState: setInactiveState,
     setActiveState: setActiveState
