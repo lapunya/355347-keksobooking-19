@@ -18,14 +18,7 @@
     alert(errorMessage);
   };
 
-  window.load(onSuccess, onError);
-
-  /* for (var i = 0; i < 8; i++) {
-    var correctIndex = i + 1;
-    advertisements[i] = window.advertisement.create(correctIndex);
-    var newPin = window.pin.create(advertisements[i]);
-    fragment.appendChild(newPin);
-  } */
+  window.backend.download(onSuccess, onError);
 
   var advertisementCard = document.querySelector('.map__pins'); // блок в который копируем объявления
 

@@ -11,6 +11,9 @@
   var roomsArray = roomsInput.querySelectorAll('option');
   var guestsArray = guestsInput.querySelectorAll('option');
 
+  var successMessageTemplate = document.querySelector('#success').content.querySelector('.success'); // сообщение об успешной отправке формы
+  var errorMessageTemplate = document.querySelector('#error').content.querySelector('.error'); // сообщение об ошибке при отправке формы
+
   var validateRoomRuleGuest = {
     '100': function (value) {
       return value === 0;
@@ -25,6 +28,30 @@
       return value === 1 || value === 2 || value === 3;
     }
   };
+
+  var onSuccess = function () {
+    document.querySelector('main').appendChild(successMessageTemplate);
+    document.addEventListener('keydown', onMessageEscPress);
+  };
+
+  var onError = function (errorMessage) {
+    var fragment = document.createDocumentFragment();
+
+    errorMessageTemplate.querySelector('.error__message').textContent = errorMessage;
+
+    fragment.appendChild(errorMessageTemplate);
+    document.querySelector('main').appendChild(fragment);
+  };
+
+  var closeMessage = function () {
+    successMessageTemplate.remove();
+    document.removeEventListener('keydown', onMessageEscPress);
+  };
+
+  var onMessageEscPress = function (evt) {
+    window.util.isEscPress(evt, closeMessage);
+  };
+
   var installForm = function () {
     guestsInput.addEventListener('input', function () { // Валидация полей с количеством гостей и количеством комнат
       var guests = window.util.getSelectedOption(guestsArray);
@@ -68,6 +95,11 @@
           housePriceInput.placeholder = 10000;
           break;
       }
+    });
+
+    adForm.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      window.backend.upload(new FormData(adForm), onSuccess, onError);
     });
   };
 
