@@ -31,17 +31,20 @@
   };
 
   var onSuccessApiResponse = function () {
+    window.main.setInactiveState();
+
+    window.pin.reset(mainPage);
+
     mainPage.appendChild(successMessageTemplate);
     document.addEventListener('keydown', onMessageEscPress);
   };
 
   var onError = function (errorMessage) {
-    var fragment = document.createDocumentFragment();
-
+    window.main.setInactiveState();
+    window.pin.reset(mainPage);
     errorMessageTemplate.querySelector('.error__message').textContent = errorMessage;
 
-    fragment.appendChild(errorMessageTemplate);
-    mainPage.appendChild(fragment);
+    mainPage.appendChild(errorMessageTemplate);
   };
 
   var closeMessage = function () {

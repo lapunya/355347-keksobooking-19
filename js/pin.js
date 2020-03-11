@@ -63,9 +63,17 @@
     }
   };
 
+  var removePinElements = function (card) {
+    var renderedPins = card.querySelectorAll('.map__pin:not(.map__pin--main)');
+    renderedPins.forEach(function (pin) {
+      pin.remove();
+    });
+  };
+
   window.pin = {
     create: createMarker,
-    render: appendPinElements
+    render: appendPinElements,
+    reset: removePinElements
   };
 
 })();
