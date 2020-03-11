@@ -4,6 +4,7 @@
   var TIMEOUT = 10000;
   var DOWNLOAD_URL = 'https://js.dump.academy/keksobooking/data';
   var UPLOAD_URL = 'https://js.dump.academy/keksobooking';
+
   var code = {
     SUCCESS: 200,
     BAD_REQUEST: 400,

@@ -4,14 +4,15 @@
   var mainPage = document.querySelector('main');
   var adForm = document.querySelector('.ad-form');
   var roomsInput = adForm.querySelector('#room_number');
-  var guestsInput = adForm.querySelector('#capacity');
 
+  var guestsInput = adForm.querySelector('#capacity');
   var houseTypeInput = adForm.querySelector('#type');
   var housePriceInput = adForm.querySelector('#price');
 
   var roomsArray = roomsInput.querySelectorAll('option');
   var guestsArray = guestsInput.querySelectorAll('option');
 
+  var messageElement;
   var successMessageTemplate = document.querySelector('#success').content.querySelector('.success'); // сообщение об успешной отправке формы
   var errorMessageTemplate = document.querySelector('#error').content.querySelector('.error'); // сообщение об ошибке при отправке формы
 
@@ -31,8 +32,9 @@
   };
 
   var onSuccessApiResponse = function () {
-    window.main.setInactiveState();
+    messageElement = successMessageTemplate;
 
+    window.main.setInactiveState();
     window.pin.reset(mainPage);
 
     mainPage.appendChild(successMessageTemplate);
@@ -40,20 +42,27 @@
   };
 
   var onError = function (errorMessage) {
-    window.main.setInactiveState();
-    window.pin.reset(mainPage);
+    messageElement = errorMessageTemplate;
+
     errorMessageTemplate.querySelector('.error__message').textContent = errorMessage;
 
     mainPage.appendChild(errorMessageTemplate);
+    document.addEventListener('keydown', onMessageEscPress);
+    document.addEventListener('click', onMessageClick);
   };
 
-  var closeMessage = function () {
-    successMessageTemplate.remove();
+  var closeMessage = function () { // функция закрытия сообщения
+    messageElement.remove();
     document.removeEventListener('keydown', onMessageEscPress);
+    document.removeEventListener('click', onMessageClick);
   };
 
-  var onMessageEscPress = function (evt) {
+  var onMessageEscPress = function (evt) { // нажатие Esc на сообщении
     window.util.isEscPress(evt, closeMessage);
+  };
+
+  var onMessageClick = function (evt) { // клик по сообщению
+    window.util.isLeftMouseButtonClick(evt, closeMessage);
   };
 
   var installForm = function () {

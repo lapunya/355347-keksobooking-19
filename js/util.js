@@ -9,6 +9,12 @@
     }
   };
 
+  var isLeftMouseButtonClick = function (evt, action) {
+    if (evt.button === 0) {
+      action();
+    }
+  };
+
   var getRandomNumber = function (min, max) {
     var randomNumber = Math.floor(min + Math.random() * (max + 1 - min));
     return randomNumber;
@@ -40,6 +46,7 @@
 
   window.util = {
     isEscPress: isEscPress,
+    isLeftMouseButtonClick: isLeftMouseButtonClick,
     getRandomNumber: getRandomNumber,
     getRandomArrayElement: getRandomArrayElement,
     getArrayRandomLength: getArrayRandomLength,
