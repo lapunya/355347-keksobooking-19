@@ -15,7 +15,7 @@
   };
 
   var onError = function (errorMessage) {
-    alert(errorMessage);
+    window.form.error(errorMessage);
   };
 
   window.backend.download(onSuccess, onError);

@@ -117,7 +117,8 @@
   };
 
   window.form = {
-    install: installForm
+    install: installForm,
+    error: onError
   };
 
 })();

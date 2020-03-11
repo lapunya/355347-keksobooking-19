@@ -16,10 +16,18 @@
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === code.SUCCESS) {
-        onSuccess(xhr.response);
-      } else {
-        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+      switch (xhr.status) {
+        case code.SUCCESS:
+          onSuccess(xhr.response);
+          break;
+        case code.BAD_REQUEST:
+          onError('В запросе клиента синтаксическая ошибка');
+          break;
+        case code.NOT_FOUND:
+          onError('Страница не найдена');
+          break;
+        default:
+          onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
 
@@ -53,6 +61,8 @@
         case code.NOT_FOUND:
           onError('Страница не найдена');
           break;
+        default:
+          onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
 
