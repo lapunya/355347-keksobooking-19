@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var mainPage = document.querySelector('main');
   var adForm = document.querySelector('.ad-form');
   var roomsInput = adForm.querySelector('#room_number');
   var guestsInput = adForm.querySelector('#capacity');
@@ -29,8 +30,8 @@
     }
   };
 
-  var onSuccess = function () {
-    document.querySelector('main').appendChild(successMessageTemplate);
+  var onSuccessApiResponse = function () {
+    mainPage.appendChild(successMessageTemplate);
     document.addEventListener('keydown', onMessageEscPress);
   };
 
@@ -40,7 +41,7 @@
     errorMessageTemplate.querySelector('.error__message').textContent = errorMessage;
 
     fragment.appendChild(errorMessageTemplate);
-    document.querySelector('main').appendChild(fragment);
+    mainPage.appendChild(fragment);
   };
 
   var closeMessage = function () {
@@ -99,7 +100,7 @@
 
     adForm.addEventListener('submit', function (evt) {
       evt.preventDefault();
-      window.backend.upload(new FormData(adForm), onSuccess, onError);
+      window.backend.upload(new FormData(adForm), onSuccessApiResponse, onError);
     });
   };
 
