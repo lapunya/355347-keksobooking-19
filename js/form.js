@@ -1,15 +1,20 @@
 'use strict';
 
 (function () {
+  var mainPage = document.querySelector('main');
   var adForm = document.querySelector('.ad-form');
   var roomsInput = adForm.querySelector('#room_number');
-  var guestsInput = adForm.querySelector('#capacity');
 
+  var guestsInput = adForm.querySelector('#capacity');
   var houseTypeInput = adForm.querySelector('#type');
   var housePriceInput = adForm.querySelector('#price');
 
   var roomsArray = roomsInput.querySelectorAll('option');
   var guestsArray = guestsInput.querySelectorAll('option');
+
+  var messageElement;
+  var successMessageTemplate = document.querySelector('#success').content.querySelector('.success'); // сообщение об успешной отправке формы
+  var errorMessageTemplate = document.querySelector('#error').content.querySelector('.error'); // сообщение об ошибке при отправке формы
 
   var validateRoomRuleGuest = {
     '100': function (value) {
@@ -25,6 +30,41 @@
       return value === 1 || value === 2 || value === 3;
     }
   };
+
+  var onSuccessApiResponse = function () {
+    messageElement = successMessageTemplate;
+
+    window.main.setInactiveState();
+    window.pin.reset();
+
+    mainPage.appendChild(successMessageTemplate);
+    document.addEventListener('keydown', onMessageEscPress);
+  };
+
+  var onErrorApiResponse = function (errorMessage) {
+    messageElement = errorMessageTemplate;
+
+    errorMessageTemplate.querySelector('.error__message').textContent = errorMessage;
+
+    mainPage.appendChild(errorMessageTemplate);
+    document.addEventListener('keydown', onMessageEscPress);
+    document.addEventListener('click', onMessageClick);
+  };
+
+  var closeMessage = function () { // функция закрытия сообщения
+    messageElement.remove();
+    document.removeEventListener('keydown', onMessageEscPress);
+    document.removeEventListener('click', onMessageClick);
+  };
+
+  var onMessageEscPress = function (evt) { // нажатие Esc на сообщении
+    window.util.isEscPress(evt, closeMessage);
+  };
+
+  var onMessageClick = function (evt) { // клик по сообщению
+    window.util.isLeftMouseButtonClick(evt, closeMessage);
+  };
+
   var installForm = function () {
     guestsInput.addEventListener('input', function () { // Валидация полей с количеством гостей и количеством комнат
       var guests = window.util.getSelectedOption(guestsArray);
@@ -69,10 +109,16 @@
           break;
       }
     });
+
+    adForm.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      window.backend.upload(new FormData(adForm), onSuccessApiResponse, onErrorApiResponse);
+    });
   };
 
   window.form = {
-    install: installForm
+    install: installForm,
+    showErrorMessage: onErrorApiResponse
   };
 
 })();

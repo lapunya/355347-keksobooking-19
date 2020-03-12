@@ -18,6 +18,8 @@
   inputAddress.value = mainPinX + ', ' + inactiveMainPinY; // заполнение поля адреса в неактивном состоянии
 
   var setInactiveState = function () { // неактивное состояние страницы
+    adForm.classList.add('ad-form--disabled');
+    map.classList.add('map--faded');
     for (var i = 0; i < adFormFields.length; i++) {
       adFormFields[i].disabled = true;
     }
