@@ -11,6 +11,18 @@
     NOT_FOUND: 404
   };
 
+  var showErrorMessage = function (xhr, onError) {
+    xhr.addEventListener('error', function () {
+      onError('Произошла ошибка соединения');
+    });
+
+    xhr.addEventListener('timeout', function () {
+      onError('Превышено время ожидания');
+    });
+
+    xhr.timeout = TIMEOUT;
+  };
+
   var download = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
@@ -31,15 +43,7 @@
       }
     });
 
-    xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
-    });
-
-    xhr.addEventListener('timeout', function () {
-      onError('Превышено время ожидания');
-    });
-
-    xhr.timeout = TIMEOUT;
+    showErrorMessage(xhr, onError);
 
     xhr.open('GET', DOWNLOAD_URL);
     xhr.send();
@@ -47,7 +51,6 @@
 
   var upload = function (data, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
-
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
@@ -66,15 +69,7 @@
       }
     });
 
-    xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
-    });
-
-    xhr.addEventListener('timeout', function () {
-      onError('Превышено время ожидания');
-    });
-
-    xhr.timeout = TIMEOUT;
+    showErrorMessage(xhr, onError);
 
     xhr.open('POST', UPLOAD_URL);
     xhr.send(data);
