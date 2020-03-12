@@ -35,7 +35,7 @@
     messageElement = successMessageTemplate;
 
     window.main.setInactiveState();
-    window.pin.reset(mainPage);
+    window.pin.reset();
 
     mainPage.appendChild(successMessageTemplate);
     document.addEventListener('keydown', onMessageEscPress);

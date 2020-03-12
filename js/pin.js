@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var mainPage = document.querySelector('main');
   var markerTemplate = document.querySelector('#pin').content;
 
   var createMarker = function (advertisement) { // Функция создания маркера
@@ -63,8 +64,8 @@
     }
   };
 
-  var removePinElements = function (card) {
-    var renderedPins = card.querySelectorAll('.map__pin:not(.map__pin--main)');
+  var removePinElements = function () {
+    var renderedPins = mainPage.querySelectorAll('.map__pin:not(.map__pin--main)');
     renderedPins.forEach(function (pin) {
       pin.remove();
     });
