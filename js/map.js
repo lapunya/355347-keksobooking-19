@@ -6,7 +6,7 @@
   var advertisements = []; // массив с объявлениями
   var fragment = document.createDocumentFragment();
 
-  var onSuccess = function (advs) {
+  var onSuccessApiResponse = function (advs) {
     for (var i = 0; i < advs.length; i++) {
       var newPin = window.pin.create(advs[i]);
       fragment.appendChild(newPin);
@@ -14,11 +14,11 @@
     }
   };
 
-  var onError = function (errorMessage) {
-    window.form.error(errorMessage);
+  var onErrorApiResponse = function (errorMessage) {
+    window.form.showErrorMessage(errorMessage);
   };
 
-  window.backend.download(onSuccess, onError);
+  window.backend.download(onSuccessApiResponse, onErrorApiResponse);
 
   var advertisementCard = document.querySelector('.map__pins'); // блок в который копируем объявления
 

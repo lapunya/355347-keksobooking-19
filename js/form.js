@@ -41,7 +41,7 @@
     document.addEventListener('keydown', onMessageEscPress);
   };
 
-  var onError = function (errorMessage) {
+  var onErrorApiResponse = function (errorMessage) {
     messageElement = errorMessageTemplate;
 
     errorMessageTemplate.querySelector('.error__message').textContent = errorMessage;
@@ -112,13 +112,13 @@
 
     adForm.addEventListener('submit', function (evt) {
       evt.preventDefault();
-      window.backend.upload(new FormData(adForm), onSuccessApiResponse, onError);
+      window.backend.upload(new FormData(adForm), onSuccessApiResponse, onErrorApiResponse);
     });
   };
 
   window.form = {
     install: installForm,
-    error: onError
+    showErrorMessage: onErrorApiResponse
   };
 
 })();
