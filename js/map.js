@@ -1,17 +1,16 @@
 'use strict';
 (function () {
-  var mainPin = document.querySelector('.map__pin--main');
+  var map = document.querySelector('.map__pins'); // блок в который копируем объявления
+  var mainPin = map.querySelector('.map__pin--main');
   var ENTER_KEY = 'Enter';
 
-  var advertisements = []; // массив с объявлениями
+  var advertisements = []; // массив со всеми объявлениями на сервере
   var fragment = document.createDocumentFragment();
 
   var onSuccessApiResponse = function (advs) {
-    for (var i = 0; i < advs.length; i++) {
-      var newPin = window.pin.create(advs[i]);
-      fragment.appendChild(newPin);
-      advertisements.push(advs[i]);
-    }
+    advs.forEach(function (elem) {
+      advertisements.push(elem);
+    });
   };
 
   var onErrorApiResponse = function (errorMessage) {
@@ -20,16 +19,14 @@
 
   window.backend.download(onSuccessApiResponse, onErrorApiResponse);
 
-  var advertisementCard = document.querySelector('.map__pins'); // блок в который копируем объявления
-
   var onActiveMouse = function (evt) {
     evt.preventDefault();
-    var mapBound = advertisementCard.getBoundingClientRect();
+    var mapBound = map.getBoundingClientRect();
     var scrollY = window.scrollY;
 
     if (evt.button === 0) {
       window.main.setActiveState();
-      window.pin.render(advertisementCard, fragment, advertisements);
+      window.pin.render(map, fragment, advertisements);
 
       var startCoords = {
         x: evt.clientX,
@@ -82,7 +79,7 @@
   var onActiveKey = function (evt) {
     if (evt.key === ENTER_KEY) {
       window.main.setActiveState();
-      window.pin.render(advertisementCard, fragment, advertisements);
+      window.pin.render(map, fragment, advertisements);
     }
   };
   var installMap = function () {
