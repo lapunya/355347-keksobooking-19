@@ -18,8 +18,8 @@
     return markerElement;
   };
 
-  var appendPinElements = function (card, fragment, data) {
-    card.appendChild(fragment); // рендер маркеров на карту
+  var appendPinElements = function (container, fragment, data) {
+    window.filter.getRightAmountPins(data);
 
     var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)'); // запись коллекции маркеров в переменную, кроме главного маркера
 
@@ -30,19 +30,19 @@
         var index = y;
 
         var onPinClick = function () {
-          var currentCard = card.querySelector('.map__card');
+          var currentCard = container.querySelector('.map__card');
 
           if (currentCard) {
             currentCard.remove();
           }
 
           fragment.appendChild(window.card.create(data[index]));
-          card.appendChild(fragment);
+          container.appendChild(fragment);
 
           var closeButton = document.querySelector('.popup__close');
 
           (function () {
-            currentCard = card.querySelector('.map__card');
+            currentCard = container.querySelector('.map__card');
 
             var closeCard = function () {
               currentCard.remove();
