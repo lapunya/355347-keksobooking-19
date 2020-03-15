@@ -19,7 +19,7 @@
   };
 
   var appendPinElements = function (container, fragment, data) {
-    window.filter.getRightAmountPins(window.filter.advArray);
+    window.filter.getRightAmountPins(/* сюда нужно добавить массив объявлений*/);
 
     var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)'); // запись коллекции маркеров в переменную, кроме главного маркера
 

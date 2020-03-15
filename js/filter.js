@@ -4,47 +4,50 @@
   var map = document.querySelector('.map__pins');
   var maxPinNumber = 5;
 
-  var allAdvertisements = []; // массив со всеми объявлениями на сервере
+  var mapFilters = document.querySelector('.map__filters');
+  var housingTypeInput = mapFilters.querySelector('#housing-type');
 
-  var onSuccessApiResponse = function (advs) {
-    advs.forEach(function (elem) {
-      allAdvertisements.push(elem);
-    });
+  var FilterType = {
+    type: 'any',
+    guests: 'any',
+    rooms: 'any',
+    price: 'any',
+    fetures: []
+  };
+
+  var filteredAdvertisements = []; // массив со всеми объявлениями на сервере
+
+  var currentFilterType;
+
+  var onSuccessApiResponse = function (advertisements) {
+    filteredAdvertisements = getFilterAdvertisements(advertisements, currentFilterType);
+    window.pin.reset();
+    getRightAmountPins(filteredAdvertisements);
+
   };
 
   var onErrorApiResponse = function (errorMessage) {
     window.form.showErrorMessage(errorMessage);
   };
 
-  window.backend.download(onSuccessApiResponse, onErrorApiResponse);
+  var getFilterAdvertisements = function (advertisements, type) {
+    if (type === 'any') {
+      return advertisements;
+    }
 
-  var mapFilters = document.querySelector('.map__filters');
-  var housingTypeInput = mapFilters.querySelector('#housing-type');
-  var housingTypes = housingTypeInput.querySelectorAll('option');
-
-  var inputFilter = function () {
-    var selectedOption = window.util.getSelectedOption(housingTypes);
-    return selectedOption.value;
+    return advertisements.filter(function (item) {
+      return item.offer.type === type;
+    });
   };
 
-  var filteredAdvertisement = [];
+  var onChangeInput = function (event) {
+    var type = event.target.value;
+    currentFilterType = type;
 
-  var pinFilter = function () {
-    filteredAdvertisement = allAdvertisements.filter(function (elem) {
-      if (inputFilter() !== 'any') {
-        return elem.offer.type === inputFilter();
-      }
-    });
-    /* allAdvertisements.forEach(function (elem) {
-      if (elem.offer.type !== inputFilter()) {
-        filteredAdvertisement.push(elem);
-      }
-    });
-    return filteredAdvertisement; */
+    window.backend.download(onSuccessApiResponse, onErrorApiResponse);
   };
-  console.log(allAdvertisements);
-  pinFilter();
-  console.log(pinFilter());
+
+  housingTypeInput.addEventListener('change', onChangeInput);
 
   var getRightAmountPins = function (data) {
     data.slice(0, maxPinNumber).forEach(function (elem) {
@@ -53,14 +56,8 @@
     map.appendChild(fragment);
   };
 
-  var getFilteredPins = getRightAmountPins(filteredAdvertisement);
-
-  var filterInstall = function () {
-    housingTypeInput.addEventListener('change', getFilteredPins);
-  };
   window.filter = {
     getRightAmountPins: getRightAmountPins,
-    advArray: allAdvertisements,
-    install: filterInstall
+    advArray: allAdvertisements
   };
 })();

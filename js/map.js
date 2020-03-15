@@ -12,9 +12,7 @@
     var scrollY = window.scrollY;
 
     if (evt.button === 0) {
-      window.main.setActiveState(); // включаем активное состояние страницы
-      window.filter.install();
-      window.pin.render(map, fragment, window.filter.advArray);
+      createScene();
       var startCoords = {
         x: evt.clientX,
         y: evt.clientY
@@ -73,6 +71,14 @@
   var installMap = function () {
     mainPin.addEventListener('mousedown', onActiveMouse);
     mainPin.addEventListener('keydown', onActiveKey);
+  };
+
+  var createScene = function () {
+    if (!window.main.isSceneCreated) {
+      window.main.setActiveState(); // включаем активное состояние страницы
+      window.pin.render(map, fragment, window.filter.advArray);
+      window.main.isSceneCreated = true;
+    }
   };
 
   window.map = {

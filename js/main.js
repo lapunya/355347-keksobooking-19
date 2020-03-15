@@ -14,6 +14,7 @@
   var activeMainPinY = Math.round(parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGHT);
 
   var inputAddress = document.querySelector('#address');
+  var isSceneCreated = false;
 
   inputAddress.value = mainPinX + ', ' + inactiveMainPinY; // заполнение поля адреса в неактивном состоянии
 
@@ -45,7 +46,8 @@
   window.main = {
     inputAddress: inputAddress,
     setInactiveState: setInactiveState,
-    setActiveState: setActiveState
+    setActiveState: setActiveState,
+    isSceneCreated: isSceneCreated
   };
 
 })();
