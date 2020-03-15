@@ -39,6 +39,7 @@
     for (var i = 0; i < selectArray.length; i++) {
       if (selectArray[i].selected) {
         selectedOption = selectArray[i];
+        break;
       }
     }
     return selectedOption;

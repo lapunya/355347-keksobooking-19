@@ -4,20 +4,7 @@
   var mainPin = map.querySelector('.map__pin--main');
   var ENTER_KEY = 'Enter';
 
-  var advertisements = []; // массив со всеми объявлениями на сервере
   var fragment = document.createDocumentFragment();
-
-  var onSuccessApiResponse = function (advs) {
-    advs.forEach(function (elem) {
-      advertisements.push(elem);
-    });
-  };
-
-  var onErrorApiResponse = function (errorMessage) {
-    window.form.showErrorMessage(errorMessage);
-  };
-
-  window.backend.download(onSuccessApiResponse, onErrorApiResponse);
 
   var onActiveMouse = function (evt) {
     evt.preventDefault();
@@ -25,9 +12,9 @@
     var scrollY = window.scrollY;
 
     if (evt.button === 0) {
-      window.main.setActiveState();
-      window.pin.render(map, fragment, advertisements);
-
+      window.main.setActiveState(); // включаем активное состояние страницы
+      window.filter.install();
+      window.pin.render(map, fragment, window.filter.advArray);
       var startCoords = {
         x: evt.clientX,
         y: evt.clientY
@@ -79,7 +66,8 @@
   var onActiveKey = function (evt) {
     if (evt.key === ENTER_KEY) {
       window.main.setActiveState();
-      window.pin.render(map, fragment, advertisements);
+      window.pin.render(map, fragment, window.filter.advArray);
+      mainPin.removeEventListener('keydown', onActiveKey);
     }
   };
   var installMap = function () {
