@@ -35,6 +35,21 @@
     inputAddress.value = mainPinX + ', ' + activeMainPinY;
   };
 
+  var createScene = function (advertisements) {
+    if (!isSceneCreated) {
+      window.main.setActiveState(); // включаем активное состояние страницы
+
+      var filteredAdvertisements = window.filter.getRightAmountPins(advertisements); // создаем массив отфильтрованных объявлений
+
+      window.pin.render(filteredAdvertisements); // рендерим отфильтрованные метки
+      isSceneCreated = true;
+    }
+  };
+
+  var fetchApiData = function () {
+    window.backend.download(createScene, window.filter.onErrorApiResponse);
+  };
+
   var setupApplication = function () {
     window.map.install();
     window.form.install();
@@ -47,7 +62,8 @@
     inputAddress: inputAddress,
     setInactiveState: setInactiveState,
     setActiveState: setActiveState,
-    isSceneCreated: isSceneCreated
+    fetchApiData: fetchApiData,
+    createScene: createScene
   };
 
 })();
