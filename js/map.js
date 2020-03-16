@@ -4,15 +4,14 @@
   var mainPin = map.querySelector('.map__pin--main');
   var ENTER_KEY = 'Enter';
 
-  var fragment = document.createDocumentFragment();
-
   var onActiveMouse = function (evt) {
     evt.preventDefault();
     var mapBound = map.getBoundingClientRect();
     var scrollY = window.scrollY;
 
     if (evt.button === 0) {
-      createScene();
+      window.main.fetchApiData();
+
       var startCoords = {
         x: evt.clientX,
         y: evt.clientY
@@ -64,21 +63,13 @@
   var onActiveKey = function (evt) {
     if (evt.key === ENTER_KEY) {
       window.main.setActiveState();
-      window.pin.render(map, fragment, window.filter.advArray);
+      window.main.fetchApiData();
       mainPin.removeEventListener('keydown', onActiveKey);
     }
   };
   var installMap = function () {
     mainPin.addEventListener('mousedown', onActiveMouse);
     mainPin.addEventListener('keydown', onActiveKey);
-  };
-
-  var createScene = function () {
-    if (!window.main.isSceneCreated) {
-      window.main.setActiveState(); // включаем активное состояние страницы
-      window.pin.render(map, fragment, window.filter.advArray);
-      window.main.isSceneCreated = true;
-    }
   };
 
   window.map = {
