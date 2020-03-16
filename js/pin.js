@@ -18,8 +18,14 @@
     return markerElement;
   };
 
-  var appendPinElements = function (container, fragment, data) {
-    window.filter.getRightAmountPins(/* сюда нужно добавить массив объявлений*/);
+  var renderPinElements = function (data) {
+    var fragment = document.createDocumentFragment();
+    var map = document.querySelector('.map__pins');
+
+    data.forEach(function (elem) {
+      fragment.appendChild(window.pin.create(elem));
+    });
+    map.appendChild(fragment);
 
     var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)'); // запись коллекции маркеров в переменную, кроме главного маркера
 
@@ -30,19 +36,19 @@
         var index = y;
 
         var onPinClick = function () {
-          var currentCard = container.querySelector('.map__card');
+          var currentCard = map.querySelector('.map__card');
 
           if (currentCard) {
             currentCard.remove();
           }
 
           fragment.appendChild(window.card.create(data[index]));
-          container.appendChild(fragment);
+          map.appendChild(fragment);
 
           var closeButton = document.querySelector('.popup__close');
 
           (function () {
-            currentCard = container.querySelector('.map__card');
+            currentCard = map.querySelector('.map__card');
 
             var closeCard = function () {
               currentCard.remove();
@@ -73,7 +79,7 @@
 
   window.pin = {
     create: createMarker,
-    render: appendPinElements,
+    render: renderPinElements,
     reset: removePinElements
   };
 
