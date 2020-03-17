@@ -3,6 +3,8 @@
   var mapFilters = document.querySelector('.map__filters');
   var housingTypeInput = mapFilters.querySelector('#housing-type');
   var guests = mapFilters.querySelector('#housing-guests');
+
+  var rooms = mapFilters.querySelector('#housing-rooms');
   var maxPinNumber = 5;
 
   var FilterType = {
@@ -42,7 +44,11 @@
       });
     } else if (selectType === 'guests') {
       return advertisements.filter(function (item) {
-        return item.offer.guests === value;
+        return item.offer.guests === +value;
+      });
+    } else if (selectType === 'rooms') {
+      return advertisements.filter(function (item) {
+        return item.offer.rooms === +value;
       });
     }
   };
@@ -59,7 +65,7 @@
 
   housingTypeInput.addEventListener('change', onChangeInput);
   guests.addEventListener('change', onChangeInput);
-
+  rooms.addEventListener('change', onChangeInput);
   var getRightAmountPins = function (data) {
     return data.slice(0, maxPinNumber);
   };
