@@ -2,17 +2,16 @@
 (function () {
   var mapFilters = document.querySelector('.map__filters');
   var housingTypeInput = mapFilters.querySelector('#housing-type');
-  var guests = mapFilters.querySelector('#housing-guests');
+  var guestsInput = mapFilters.querySelector('#housing-guests');
 
-  var rooms = mapFilters.querySelector('#housing-rooms');
+  var roomsInput = mapFilters.querySelector('#housing-rooms');
+  var priceInput = mapFilters.querySelector('#housing-price');
   var maxPinNumber = 5;
 
-  var FilterType = {
-    type: 'any',
-    guests: 'any',
-    rooms: 'any',
-    price: 'any',
-    fetures: []
+  var HousePrice = {
+    any: 'any',
+    low: '10000',
+    high: '50000'
   };
 
   var currentFilterValue;
@@ -50,6 +49,20 @@
       return advertisements.filter(function (item) {
         return item.offer.rooms === +value;
       });
+    } else if (selectType === 'price') {
+      if (value === 'low') {
+        return advertisements.filter(function (item) {
+          return item.offer.price <= HousePrice.low;
+        });
+      } else if (value === 'middle') {
+        return advertisements.filter(function (item) {
+          return item.offer.price >= HousePrice.low && item.offer.price < HousePrice.high;
+        });
+      } else if (value === 'high') {
+        return advertisements.filter(function (item) {
+          return item.offer.price >= HousePrice.high;
+        });
+      }
     }
   };
 
@@ -64,8 +77,10 @@
   };
 
   housingTypeInput.addEventListener('change', onChangeInput);
-  guests.addEventListener('change', onChangeInput);
-  rooms.addEventListener('change', onChangeInput);
+  guestsInput.addEventListener('change', onChangeInput);
+  roomsInput.addEventListener('change', onChangeInput);
+  priceInput.addEventListener('change', onChangeInput);
+
   var getRightAmountPins = function (data) {
     return data.slice(0, maxPinNumber);
   };
