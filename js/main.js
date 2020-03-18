@@ -29,6 +29,7 @@
     for (var i = 0; i < adFormFields.length; i++) {
       adFormFields[i].disabled = true;
     }
+    isSceneCreated = false;
   };
 
   var setActiveState = function () { // активное состояние страницы
