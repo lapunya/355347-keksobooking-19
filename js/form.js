@@ -9,6 +9,10 @@
   var houseTypeInput = adForm.querySelector('#type');
   var housePriceInput = adForm.querySelector('#price');
 
+  var timeFieldset = adForm.querySelector('.ad-form__element--time');
+  var timeInInput = adForm.querySelector('#timein');
+  var timeOutInput = adForm.querySelector('#timeout');
+
   var roomsArray = roomsInput.querySelectorAll('option');
   var guestsArray = guestsInput.querySelectorAll('option');
 
@@ -29,6 +33,11 @@
     '3': function (value) {
       return value === 1 || value === 2 || value === 3;
     }
+  };
+
+  var onTimeInputChange = function (evt) { // валидация полей времени заезда/выезда
+    timeInInput.value = evt.target.value;
+    timeOutInput.value = evt.target.value;
   };
 
   var onSuccessApiResponse = function () {
@@ -109,6 +118,8 @@
           break;
       }
     });
+
+    timeFieldset.addEventListener('change', onTimeInputChange);
 
     adForm.addEventListener('submit', function (evt) {
       evt.preventDefault();
