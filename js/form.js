@@ -43,7 +43,7 @@
     messageElement = successMessageTemplate;
 
     window.main.setInactiveState();
-    window.pin.reset();
+    window.main.reset();
 
     mainPage.appendChild(successMessageTemplate);
     document.addEventListener('keydown', onMessageEscPress);
@@ -75,7 +75,7 @@
 
   var onResetClick = function () {
     window.main.setInactiveState();
-    window.pin.reset();
+    window.main.reset();
   };
 
   var installForm = function () {

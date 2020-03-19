@@ -52,6 +52,18 @@
     }
   };
 
+  var resetPage = function () {
+    var renderedPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
+    renderedPins.forEach(function (pin) {
+      pin.remove();
+    });
+
+    var renderedCard = map.querySelector('.map__card');
+    if (renderedCard) {
+      renderedCard.remove();
+    }
+  };
+
   var fetchApiData = function () {
     window.backend.download(createScene, window.filter.onErrorApiResponse);
   };
@@ -69,7 +81,8 @@
     setInactiveState: setInactiveState,
     setActiveState: setActiveState,
     fetchApiData: fetchApiData,
-    createScene: createScene
+    createScene: createScene,
+    reset: resetPage
   };
 
 })();

@@ -1,11 +1,7 @@
 'use strict';
 (function () {
   var mapFilters = document.querySelector('.map__filters');
-  var housingTypeInput = mapFilters.querySelector('#housing-type');
-  var guestsInput = mapFilters.querySelector('#housing-guests');
 
-  var roomsInput = mapFilters.querySelector('#housing-rooms');
-  var priceInput = mapFilters.querySelector('#housing-price');
   var maxPinNumber = 5;
 
   var HousePrice = {
@@ -20,7 +16,7 @@
   var onSuccessApiResponse = function (advertisements) {
     var filteredAdvertisements = getFilterAdvertisements(advertisements, currentFilterValue);
 
-    window.pin.reset();
+    window.main.reset();
     window.pin.render(filteredAdvertisements);
   };
 
@@ -33,10 +29,10 @@
       return getRightAmountPins(advertisements);
     }
 
-    return onSelectChange(advertisements, value);
+    return applySelectChange(advertisements, value);
   };
 
-  var onSelectChange = function (advertisements, value) {
+  var applySelectChange = function (advertisements, value) {
     if (selectType === 'type') {
       return advertisements.filter(function (item) {
         return item.offer.type === value;
@@ -67,19 +63,17 @@
   };
 
   var onChangeInput = function (event) {
-    var value = event.target.value;
+    var target = event.target;
+    var value = target.value;
+
     currentFilterValue = value;
 
-    var target = event.target;
     selectType = target.getAttribute('data-select-type');
 
     window.backend.download(onSuccessApiResponse, onErrorApiResponse);
   };
 
-  housingTypeInput.addEventListener('change', onChangeInput);
-  guestsInput.addEventListener('change', onChangeInput);
-  roomsInput.addEventListener('change', onChangeInput);
-  priceInput.addEventListener('change', onChangeInput);
+  mapFilters.addEventListener('change', onChangeInput);
 
   var getRightAmountPins = function (data) {
     return data.slice(0, maxPinNumber);
