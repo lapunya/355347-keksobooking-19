@@ -1,7 +1,6 @@
 'use strict';
 (function () {
   var mapFilters = document.querySelector('.map__filters');
-
   var maxPinNumber = 5;
 
   var HousePrice = {
@@ -12,6 +11,8 @@
 
   var currentFilterValue;
   var selectType;
+  var checked;
+  var filterType;
 
   var onSuccessApiResponse = function (advertisements) {
     var filteredAdvertisements = getFilterAdvertisements(advertisements, currentFilterValue);
@@ -59,6 +60,12 @@
           return item.offer.price >= HousePrice.high;
         });
       }
+    } else if (filterType === 'checkbox') {
+      if (checked) {
+        return advertisements.filter(function (item) {
+          return item.offer.features.includes(value);
+        });
+      }
     }
   };
 
@@ -68,12 +75,15 @@
 
     currentFilterValue = value;
 
-    selectType = target.getAttribute('data-select-type');
+    checked = target.checked;
 
+    selectType = target.getAttribute('data-select-type');
+    filterType = target.type;
     window.backend.download(onSuccessApiResponse, onErrorApiResponse);
   };
 
   mapFilters.addEventListener('change', onChangeInput);
+
 
   var getRightAmountPins = function (data) {
     return data.slice(0, maxPinNumber);
