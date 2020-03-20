@@ -2,6 +2,7 @@
 
 (function () {
   var ESC_KEY = 'Escape';
+  var DEBOUNCE_INTERVAL = 300;
 
   var isEscPress = function (evt, action) {
     if (evt.key === ESC_KEY) {
@@ -26,9 +27,24 @@
     return selectedOption;
   };
 
+  var debounce = function (cb) {
+    var lastTimeout = null;
+
+    return function () {
+      var parameters = arguments;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        cb.apply(null, parameters);
+      }, DEBOUNCE_INTERVAL);
+    };
+  };
+
   window.util = {
     isEscPress: isEscPress,
     isLeftMouseButtonClick: isLeftMouseButtonClick,
-    getSelectedOption: getSelectedOption
+    getSelectedOption: getSelectedOption,
+    debounce: debounce
   };
 })();

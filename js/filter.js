@@ -81,7 +81,9 @@
             return item.offer.features.includes(value);
           });
         } else {
-          return advertisements;
+          return advertisements.filter(function (item) {
+            return !(item.offer.features.includes(value));
+          });
         }
       default:
         return advertisements;
@@ -100,12 +102,12 @@
     }
   };
 
-  var onChangeFilter = function (event) {
+  var onChangeFilter = window.util.debounce(function (event) {
     var target = event.target;
     currentInputElement = target;
     currentFilterValue = target.value;
     window.backend.download(onSuccessApiResponse, onErrorApiResponse);
-  };
+  });
 
   mapFilters.addEventListener('change', onChangeFilter);
 
