@@ -19,21 +19,6 @@
   var successMessageTemplate = document.querySelector('#success').content.querySelector('.success'); // сообщение об успешной отправке формы
   var errorMessageTemplate = document.querySelector('#error').content.querySelector('.error'); // сообщение об ошибке при отправке формы
 
-  /* var validateRoomRuleGuest = {
-    '100': function (value) {
-      return value === 0;
-    },
-    '1': function (value) {
-      return value === 1;
-    },
-    '2': function (value) {
-      return value === 1 || value === 2;
-    },
-    '3': function (value) {
-      return value === 1 || value === 2 || value === 3;
-    }
-  }; */
-
   var onTimeInputChange = function (evt) { // валидация полей времени заезда/выезда
     timeInInput.value = evt.target.value;
     timeOutInput.value = evt.target.value;
@@ -78,39 +63,55 @@
     window.main.reset();
   };
 
-  var installForm = function () {
-    roomsInput.addEventListener('change', function (evt) {
-      var rooms = evt.target;
+  var validateRoomInputElement = function () {
+    guestsArray.forEach(function (guest) {
+      var roomsCount = +roomsInput.value;
+      var guestValue = +guest.value;
 
-      guestsArray.forEach(function (elem) {
-        if (+elem.value <= +rooms.value && +elem.value !== 0) {
-          elem.disabled = false;
-        } else if (+elem.value === 0 && +rooms.value === 100) {
-          elem.disabled = false;
-          elem.selected = true;
-        } else {
-          elem.disabled = true;
-          elem.selected = false;
-        }
-      });
-    });
-    /* guestsInput.addEventListener('input', function () { // Валидация полей с количеством гостей и количеством комнат
-      var guests = window.util.getSelectedOption(guestsArray);
-      var rooms = window.util.getSelectedOption(roomsArray);
+      switch (roomsCount) {
+        case 100:
+          if (guestValue === 0) {
+            guest.disabled = false;
+            guest.selected = true;
+          } else {
+            guest.disabled = true;
+          }
+          break;
 
-      var guestValue = Number(guests.value);
-      var roomValue = rooms.value;
+        case 1:
+          if (guestValue === 1) {
+            guest.disabled = false;
+            guest.selected = true;
+          } else {
+            guest.disabled = true;
+          }
+          break;
 
-      var validateMethod = validateRoomRuleGuest[roomValue];
+        case 2:
+          if (guestValue <= 2 && guestValue !== 0) {
+            guest.disabled = false;
+            guest.selected = true;
+          } else {
+            guest.disabled = true;
+          }
+          break;
 
-      var isValidInput = validateMethod(guestValue);
-
-      if (!isValidInput) {
-        guestsInput.setCustomValidity('Число гостей не должно превышать количество комнат');
-      } else {
-        guestsInput.setCustomValidity('');
+        case 3:
+          if (guestValue <= 3 && guestValue !== 0) {
+            guest.disabled = false;
+            guest.selected = true;
+          } else {
+            guest.disabled = true;
+          }
+          break;
       }
-    }); */
+    });
+  };
+
+  var installForm = function () {
+    roomsInput.addEventListener('change', validateRoomInputElement);
+
+    validateRoomInputElement();
 
     houseTypeInput.addEventListener('input', function () { // функция валидации полей типа жилья и цены
       var houseType = window.util.getSelectedOption(houseTypeInput).value;
