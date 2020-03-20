@@ -75,7 +75,7 @@
 
     switch (inputType) {
       case 'checkbox':
-        var checked = currentInputElement.getAttribute('checked');
+        var checked = currentInputElement.checked;
         if (checked) {
           return advertisements.filter(function (item) {
             return item.offer.features.includes(value);
@@ -90,7 +90,6 @@
 
   var applyFilter = function (advertisements, value) {
     var inputTag = currentInputElement.tagName.toLowerCase();
-
     switch (inputTag) {
       case 'input':
         return onChangeInput(advertisements, value);
