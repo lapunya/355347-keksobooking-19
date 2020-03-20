@@ -10,15 +10,14 @@
   };
 
   var currentFilterValue;
-  var selectType;
-  var checked;
-  var filterType;
+  var currentInputElement;
 
   var onSuccessApiResponse = function (advertisements) {
     var filteredAdvertisements = getFilterAdvertisements(advertisements, currentFilterValue);
+    var cutAdvertisements = getRightAmountPins(filteredAdvertisements);
 
     window.main.reset();
-    window.pin.render(filteredAdvertisements);
+    window.pin.render(cutAdvertisements);
   };
 
   var onErrorApiResponse = function (errorMessage) {
@@ -27,62 +26,89 @@
 
   var getFilterAdvertisements = function (advertisements, value) {
     if (value === 'any') {
-      return getRightAmountPins(advertisements);
+      return advertisements;
     }
 
-    return applySelectChange(advertisements, value);
+    return applyFilter(advertisements, value);
   };
 
-  var applySelectChange = function (advertisements, value) {
-    if (selectType === 'type') {
-      return advertisements.filter(function (item) {
-        return item.offer.type === value;
-      });
-    } else if (selectType === 'guests') {
-      return advertisements.filter(function (item) {
-        return item.offer.guests === +value;
-      });
-    } else if (selectType === 'rooms') {
-      return advertisements.filter(function (item) {
-        return item.offer.rooms === +value;
-      });
-    } else if (selectType === 'price') {
-      if (value === 'low') {
+  var onChangeSelect = function (advertisements, value) {
+    var selectType = currentInputElement.getAttribute('data-select-type');
+
+    switch (selectType) {
+      case 'type':
         return advertisements.filter(function (item) {
-          return item.offer.price <= HousePrice.low;
+          return item.offer.type === value;
         });
-      } else if (value === 'middle') {
+      case 'guests':
         return advertisements.filter(function (item) {
-          return item.offer.price >= HousePrice.low && item.offer.price < HousePrice.high;
+          return item.offer.guests === +value;
         });
-      } else if (value === 'high') {
+      case 'rooms':
         return advertisements.filter(function (item) {
-          return item.offer.price >= HousePrice.high;
+          return item.offer.rooms === +value;
         });
-      }
-    } else if (filterType === 'checkbox') {
-      if (checked) {
-        return advertisements.filter(function (item) {
-          return item.offer.features.includes(value);
-        });
-      }
+      case 'price':
+        switch (value) {
+          case 'low':
+            return advertisements.filter(function (item) {
+              return item.offer.price <= HousePrice.low;
+            });
+          case 'middle':
+            return advertisements.filter(function (item) {
+              return item.offer.price >= HousePrice.low && item.offer.price < HousePrice.high;
+            });
+          case 'high':
+            return advertisements.filter(function (item) {
+              return item.offer.price >= HousePrice.high;
+            });
+          default:
+            return advertisements;
+        }
+      default:
+        return advertisements;
     }
   };
 
-  var onChangeInput = function (event) {
+  var onChangeInput = function (advertisements, value) {
+    var inputType = currentInputElement.getAttribute('type');
+
+    switch (inputType) {
+      case 'checkbox':
+        var checked = currentInputElement.getAttribute('checked');
+        if (checked) {
+          return advertisements.filter(function (item) {
+            return item.offer.features.includes(value);
+          });
+        } else {
+          return advertisements;
+        }
+      default:
+        return advertisements;
+    }
+  };
+
+  var applyFilter = function (advertisements, value) {
+    var inputTag = currentInputElement.tagName.toLowerCase();
+
+    switch (inputTag) {
+      case 'input':
+        return onChangeInput(advertisements, value);
+      case 'select':
+        return onChangeSelect(advertisements, value);
+      default:
+        return advertisements;
+    }
+  };
+
+  var onChangeFilter = function (event) {
     var target = event.target;
-    var value = target.value;
-
-    currentFilterValue = value;
-
-    checked = target.checked;
-
-    selectType = target.getAttribute('data-select-type');
-    filterType = target.type;
+    currentInputElement = target;
+    currentFilterValue = target.value;
     window.backend.download(onSuccessApiResponse, onErrorApiResponse);
   };
 
-  mapFilters.addEventListener('change', onChangeInput);
+  mapFilters.addEventListener('change', onChangeFilter);
 
 
   var getRightAmountPins = function (data) {
