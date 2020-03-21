@@ -9,33 +9,26 @@
   var houseTypeInput = adForm.querySelector('#type');
   var housePriceInput = adForm.querySelector('#price');
 
-  var roomsArray = roomsInput.querySelectorAll('option');
+  var timeFieldset = adForm.querySelector('.ad-form__element--time');
+  var timeInInput = adForm.querySelector('#timein');
+  var timeOutInput = adForm.querySelector('#timeout');
+
   var guestsArray = guestsInput.querySelectorAll('option');
 
   var messageElement;
   var successMessageTemplate = document.querySelector('#success').content.querySelector('.success'); // сообщение об успешной отправке формы
   var errorMessageTemplate = document.querySelector('#error').content.querySelector('.error'); // сообщение об ошибке при отправке формы
 
-  var validateRoomRuleGuest = {
-    '100': function (value) {
-      return value === 0;
-    },
-    '1': function (value) {
-      return value === 1;
-    },
-    '2': function (value) {
-      return value === 1 || value === 2;
-    },
-    '3': function (value) {
-      return value === 1 || value === 2 || value === 3;
-    }
+  var onTimeInputChange = function (evt) { // валидация полей времени заезда/выезда
+    timeInInput.value = evt.target.value;
+    timeOutInput.value = evt.target.value;
   };
 
   var onSuccessApiResponse = function () {
     messageElement = successMessageTemplate;
 
     window.main.setInactiveState();
-    window.pin.reset();
+    window.main.reset();
 
     mainPage.appendChild(successMessageTemplate);
     document.addEventListener('keydown', onMessageEscPress);
@@ -65,24 +58,60 @@
     window.util.isLeftMouseButtonClick(evt, closeMessage);
   };
 
-  var installForm = function () {
-    guestsInput.addEventListener('input', function () { // Валидация полей с количеством гостей и количеством комнат
-      var guests = window.util.getSelectedOption(guestsArray);
-      var rooms = window.util.getSelectedOption(roomsArray);
+  var onResetClick = function () {
+    window.main.setInactiveState();
+    window.main.reset();
+  };
 
-      var guestValue = Number(guests.value);
-      var roomValue = rooms.value;
+  var validateRoomInputElement = function () {
+    guestsArray.forEach(function (guest) {
+      var roomsCount = +roomsInput.value;
+      var guestValue = +guest.value;
 
-      var validateMethod = validateRoomRuleGuest[roomValue];
+      switch (roomsCount) {
+        case 100:
+          if (guestValue === 0) {
+            guest.disabled = false;
+            guest.selected = true;
+          } else {
+            guest.disabled = true;
+          }
+          break;
 
-      var isValidInput = validateMethod(guestValue);
+        case 1:
+          if (guestValue === 1) {
+            guest.disabled = false;
+            guest.selected = true;
+          } else {
+            guest.disabled = true;
+          }
+          break;
 
-      if (!isValidInput) {
-        guestsInput.setCustomValidity('Число гостей не должно превышать количество комнат');
-      } else {
-        guestsInput.setCustomValidity('');
+        case 2:
+          if (guestValue <= 2 && guestValue !== 0) {
+            guest.disabled = false;
+            guest.selected = true;
+          } else {
+            guest.disabled = true;
+          }
+          break;
+
+        case 3:
+          if (guestValue <= 3 && guestValue !== 0) {
+            guest.disabled = false;
+            guest.selected = true;
+          } else {
+            guest.disabled = true;
+          }
+          break;
       }
     });
+  };
+
+  var installForm = function () {
+    roomsInput.addEventListener('change', validateRoomInputElement);
+
+    validateRoomInputElement();
 
     houseTypeInput.addEventListener('input', function () { // функция валидации полей типа жилья и цены
       var houseType = window.util.getSelectedOption(houseTypeInput).value;
@@ -110,10 +139,14 @@
       }
     });
 
+    timeFieldset.addEventListener('change', onTimeInputChange);
+
     adForm.addEventListener('submit', function (evt) {
       evt.preventDefault();
       window.backend.upload(new FormData(adForm), onSuccessApiResponse, onErrorApiResponse);
     });
+
+    adForm.addEventListener('reset', onResetClick);
   };
 
   window.form = {

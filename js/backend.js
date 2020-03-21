@@ -5,7 +5,7 @@
   var DOWNLOAD_URL = 'https://js.dump.academy/keksobooking/data';
   var UPLOAD_URL = 'https://js.dump.academy/keksobooking';
 
-  var code = {
+  var Code = {
     SUCCESS: 200,
     BAD_REQUEST: 400,
     NOT_FOUND: 404
@@ -23,19 +23,20 @@
     xhr.timeout = TIMEOUT;
   };
 
+
   var download = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
       switch (xhr.status) {
-        case code.SUCCESS:
+        case Code.SUCCESS:
           onSuccess(xhr.response);
           break;
-        case code.BAD_REQUEST:
+        case Code.BAD_REQUEST:
           onError('В запросе клиента синтаксическая ошибка');
           break;
-        case code.NOT_FOUND:
+        case Code.NOT_FOUND:
           onError('Страница не найдена');
           break;
         default:
@@ -55,13 +56,13 @@
 
     xhr.addEventListener('load', function () {
       switch (xhr.status) {
-        case code.SUCCESS:
+        case Code.SUCCESS:
           onSuccess(xhr.response);
           break;
-        case code.BAD_REQUEST:
+        case Code.BAD_REQUEST:
           onError('В запросе клиента синтаксическая ошибка');
           break;
-        case code.NOT_FOUND:
+        case Code.NOT_FOUND:
           onError('Страница не найдена');
           break;
         default:

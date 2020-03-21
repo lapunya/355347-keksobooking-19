@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var mainPage = document.querySelector('main');
   var markerTemplate = document.querySelector('#pin').content;
 
   var createMarker = function (advertisement) { // Функция создания маркера
@@ -18,8 +17,14 @@
     return markerElement;
   };
 
-  var appendPinElements = function (card, fragment, data) {
-    card.appendChild(fragment); // рендер маркеров на карту
+  var renderPinElements = function (data) {
+    var fragment = document.createDocumentFragment();
+    var map = document.querySelector('.map__pins');
+
+    data.forEach(function (elem) {
+      fragment.appendChild(window.pin.create(elem));
+    });
+    map.appendChild(fragment);
 
     var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)'); // запись коллекции маркеров в переменную, кроме главного маркера
 
@@ -30,19 +35,19 @@
         var index = y;
 
         var onPinClick = function () {
-          var currentCard = card.querySelector('.map__card');
+          var currentCard = map.querySelector('.map__card');
 
           if (currentCard) {
             currentCard.remove();
           }
 
           fragment.appendChild(window.card.create(data[index]));
-          card.appendChild(fragment);
+          map.appendChild(fragment);
 
           var closeButton = document.querySelector('.popup__close');
 
           (function () {
-            currentCard = card.querySelector('.map__card');
+            currentCard = map.querySelector('.map__card');
 
             var closeCard = function () {
               currentCard.remove();
@@ -64,17 +69,9 @@
     }
   };
 
-  var removePinElements = function () {
-    var renderedPins = mainPage.querySelectorAll('.map__pin:not(.map__pin--main)');
-    renderedPins.forEach(function (pin) {
-      pin.remove();
-    });
-  };
-
   window.pin = {
     create: createMarker,
-    render: appendPinElements,
-    reset: removePinElements
+    render: renderPinElements
   };
 
 })();

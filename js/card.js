@@ -5,9 +5,8 @@
     .querySelector('#card')
     .content.querySelector('.map__card'); // шаблон, содержимое которого мы будем копировать
 
-  var fragment = document.createDocumentFragment();
-
   var createCard = function (advertisement) { // Функция создания карточки объявления
+    var fragment = document.createDocumentFragment();
     var advertisementElement = advertisementTemplate.cloneNode(true); // клонируем содержимое шаблона
 
     var avatar = advertisementElement.querySelector('.popup__avatar');
