@@ -71,11 +71,12 @@
   };
 
   var onChangeInput = function (advertisements, value) {
-    var inputType = currentInputElement.getAttribute('type');
+    var inputType = currentInputElement.type;
 
     switch (inputType) {
       case 'checkbox':
         var checked = currentInputElement.checked;
+
         if (checked) {
           return advertisements.filter(function (item) {
             return item.offer.features.includes(value);
@@ -92,6 +93,7 @@
 
   var applyFilter = function (advertisements, value) {
     var inputTag = currentInputElement.tagName.toLowerCase();
+
     switch (inputTag) {
       case 'input':
         return onChangeInput(advertisements, value);
@@ -104,6 +106,7 @@
 
   var onChangeFilter = window.util.debounce(function (event) {
     var target = event.target;
+
     currentInputElement = target;
     currentFilterValue = target.value;
     window.backend.download(onSuccessApiResponse, onErrorApiResponse);

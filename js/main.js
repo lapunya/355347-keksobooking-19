@@ -24,20 +24,25 @@
   var setInactiveState = function () { // неактивное состояние страницы
     adForm.classList.add('ad-form--disabled');
     map.classList.add('map--faded');
+
     mainPin.style.left = MAIN_PIN_INITIAL_X;
     mainPin.style.top = MAIN_PIN_INITIAL_Y;
+
     for (var i = 0; i < adFormFields.length; i++) {
       adFormFields[i].disabled = true;
     }
+
     isSceneCreated = false;
   };
 
   var setActiveState = function () { // активное состояние страницы
     adForm.classList.remove('ad-form--disabled');
     map.classList.remove('map--faded');
+
     for (var i = 0; i < adFormFields.length; i++) {
       adFormFields[i].disabled = false;
     }
+
     inputAddress.value = mainPinX + ', ' + activeMainPinY;
   };
 
@@ -54,11 +59,13 @@
 
   var resetPage = function () {
     var renderedPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
+
     renderedPins.forEach(function (pin) {
       pin.remove();
     });
 
     var renderedCard = map.querySelector('.map__card');
+
     if (renderedCard) {
       renderedCard.remove();
     }
