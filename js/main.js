@@ -82,6 +82,14 @@
   };
 
   var resetAdForm = function () {
+    var selectRoomsElement = document.querySelector('#room_number');
+    var selectRoomsElementChildren = selectRoomsElement.children;
+    var defaultSelectedOption = Array.from(selectRoomsElementChildren).find(function (option) {
+      return option.value === '1';
+    });
+
+    defaultSelectedOption.selected = true;
+
     adForm.querySelectorAll('input').forEach(function (item) {
       if (item.type === 'checkbox') {
         item.checked = false;

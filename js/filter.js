@@ -9,106 +9,79 @@
     high: '50000'
   };
 
-  var currentFilterValue;
-  var currentInputElement;
-
   var onSuccessApiResponse = function (advertisements) {
-    var filteredAdvertisements = getFilterAdvertisements(advertisements, currentFilterValue);
-    var cutAdvertisements = getRightAmountPins(filteredAdvertisements);
+    var filteredAdvertisements = advertisements
+      .filter(onChangeHousingType)
+      .filter(onChangeHousingPrice)
+      .filter(onChangeHousingGuests)
+      .filter(onChangeHousingRooms);
 
     window.main.resetMap();
-    window.pin.render(cutAdvertisements);
+    window.pin.render(filteredAdvertisements);
   };
 
   var onErrorApiResponse = function (errorMessage) {
     window.form.showErrorMessage(errorMessage);
   };
 
-  var getFilterAdvertisements = function (advertisements, value) {
-    if (value === 'any') {
-      return advertisements;
+  var housingType = mapFiltersContainer.querySelector('#housing-type');
+
+  var onChangeHousingType = function (advertisement) {
+    var housingValue = housingType.value;
+
+    if (housingValue === 'any') {
+      return advertisement;
     }
 
-    return applyFilter(advertisements, value);
+    return advertisement.offer.type === housingValue;
   };
 
-  var onChangeSelect = function (advertisements, value) {
-    var selectType = currentInputElement.getAttribute('data-select-type');
+  var housingPrice = mapFiltersContainer.querySelector('#housing-price');
 
-    switch (selectType) {
-      case 'type':
-        return advertisements.filter(function (item) {
-          return item.offer.type === value;
-        });
-      case 'guests':
-        return advertisements.filter(function (item) {
-          return item.offer.guests === +value;
-        });
-      case 'rooms':
-        return advertisements.filter(function (item) {
-          return item.offer.rooms === +value;
-        });
-      case 'price':
-        switch (value) {
-          case 'low':
-            return advertisements.filter(function (item) {
-              return item.offer.price <= HousePrice.low;
-            });
-          case 'middle':
-            return advertisements.filter(function (item) {
-              return item.offer.price >= HousePrice.low && item.offer.price < HousePrice.high;
-            });
-          case 'high':
-            return advertisements.filter(function (item) {
-              return item.offer.price >= HousePrice.high;
-            });
-          default:
-            return advertisements;
-        }
+  var onChangeHousingPrice = function (advertisement) {
+    var housingPriceValue = housingPrice.value;
+
+    if (housingPriceValue === 'any') {
+      return advertisement;
+    }
+
+    switch (housingPriceValue) {
+      case 'low':
+        return advertisement.offer.price <= HousePrice.low;
+      case 'middle':
+        return advertisement.offer.price >= HousePrice.low && advertisement.offer.price < HousePrice.high;
+      case 'high':
+        return advertisement.offer.price >= HousePrice.high;
       default:
-        return advertisements;
+        return advertisement;
     }
   };
 
-  var onChangeInput = function (advertisements, value) {
-    var inputType = currentInputElement.type;
+  var housingRooms = mapFiltersContainer.querySelector('#housing-rooms');
 
-    switch (inputType) {
-      case 'checkbox':
-        var checked = currentInputElement.checked;
+  var onChangeHousingRooms = function (advertisement) {
+    var housingRoomsValue = housingRooms.value;
 
-        if (checked) {
-          return advertisements.filter(function (item) {
-            return item.offer.features.includes(value);
-          });
-        } else {
-          return advertisements.filter(function (item) {
-            return !(item.offer.features.includes(value));
-          });
-        }
-      default:
-        return advertisements;
+    if (housingRoomsValue === 'any') {
+      return advertisement;
     }
+
+    return advertisement.offer.rooms === +housingRoomsValue;
   };
 
-  var applyFilter = function (advertisements, value) {
-    var inputTag = currentInputElement.tagName.toLowerCase();
+  var housingGuests = mapFiltersContainer.querySelector('#housing-guests');
 
-    switch (inputTag) {
-      case 'input':
-        return onChangeInput(advertisements, value);
-      case 'select':
-        return onChangeSelect(advertisements, value);
-      default:
-        return advertisements;
+  var onChangeHousingGuests = function (advertisement) {
+    var housingGuestsValue = housingGuests.value;
+
+    if (housingGuestsValue === 'any') {
+      return advertisement;
     }
+
+    return advertisement.offer.guests === +housingGuestsValue;
   };
 
-  var onChangeFilter = window.util.debounce(function (event) {
-    var target = event.target;
-
-    currentInputElement = target;
-    currentFilterValue = target.value;
+  var onChangeFilter = window.util.debounce(function () {
     window.backend.download(onSuccessApiResponse, onErrorApiResponse);
   });
 
