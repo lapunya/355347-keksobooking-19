@@ -28,7 +28,7 @@
     messageElement = successMessageTemplate;
 
     window.main.setInactiveState();
-    window.main.reset();
+    window.main.resetMap();
 
     mainPage.appendChild(successMessageTemplate);
     document.addEventListener('keydown', onMessageEscPress);
@@ -60,7 +60,8 @@
 
   var onResetClick = function () {
     window.main.setInactiveState();
-    window.main.reset();
+    window.main.resetMap();
+    window.filter.reset();
   };
 
   var validateRoomInputElement = function () {
@@ -144,6 +145,8 @@
     adForm.addEventListener('submit', function (evt) {
       evt.preventDefault();
       window.backend.upload(new FormData(adForm), onSuccessApiResponse, onErrorApiResponse);
+      window.main.resetAdForm();
+      onResetClick();
     });
 
     adForm.addEventListener('reset', onResetClick);

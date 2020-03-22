@@ -9,15 +9,15 @@
   var mapFilters = mapFiltersContainer.childNodes;
 
   var mainPin = document.querySelector('.map__pin--main');
-  var MAIN_PIN_WIDTH = mainPin.offsetWidth;
-  var MAIN_PIN_HEIGHT = mainPin.offsetHeight;
+  var mainPinWidth = mainPin.offsetWidth;
+  var mainPinHeight = mainPin.offsetHeight;
 
-  var MAIN_PIN_INITIAL_X = mainPin.style.left;
-  var MAIN_PIN_INITIAL_Y = mainPin.style.top;
+  var mainPinInitialX = mainPin.style.left;
+  var mainPinInitialY = mainPin.style.top;
 
-  var mainPinX = Math.round(parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2);
-  var inactiveMainPinY = Math.round(parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGHT / 2);
-  var activeMainPinY = Math.round(parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGHT);
+  var mainPinX = Math.round(parseInt(mainPin.style.left, 10) + mainPinWidth / 2);
+  var inactiveMainPinY = Math.round(parseInt(mainPin.style.top, 10) + mainPinHeight / 2);
+  var activeMainPinY = Math.round(parseInt(mainPin.style.top, 10) + mainPinHeight);
 
   var inputAddress = document.querySelector('#address');
   var isSceneCreated = false;
@@ -26,8 +26,8 @@
     adForm.classList.add('ad-form--disabled');
     map.classList.add('map--faded');
 
-    mainPin.style.left = MAIN_PIN_INITIAL_X;
-    mainPin.style.top = MAIN_PIN_INITIAL_Y;
+    mainPin.style.left = mainPinInitialX;
+    mainPin.style.top = mainPinInitialY;
 
     adFormFields.forEach(function (item) {
       item.disabled = true;
@@ -36,6 +36,7 @@
     mapFilters.forEach(function (item) {
       item.disabled = true;
     });
+
     inputAddress.placeholder = mainPinX + ', ' + inactiveMainPinY; // заполнение поля адреса в неактивном состоянии
     isSceneCreated = false;
   };
@@ -49,7 +50,7 @@
     });
 
     mapFilters.forEach(function (item) {
-      item.disabled = true;
+      item.disabled = false;
     });
 
     inputAddress.placeholder = mainPinX + ', ' + activeMainPinY; // заполнение поля адреса в активном состоянии
@@ -66,7 +67,7 @@
     }
   };
 
-  var resetPage = function () {
+  var resetMap = function () {
     var renderedPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
 
     renderedPins.forEach(function (pin) {
@@ -78,6 +79,15 @@
     if (renderedCard) {
       renderedCard.remove();
     }
+  };
+
+  var resetAdForm = function () {
+    adForm.querySelectorAll('input').forEach(function (item) {
+      if (item.type === 'checkbox') {
+        item.checked = false;
+      }
+      item.value = '';
+    });
   };
 
   var fetchApiData = function () {
@@ -98,7 +108,8 @@
     setActiveState: setActiveState,
     fetchApiData: fetchApiData,
     createScene: createScene,
-    reset: resetPage
+    resetMap: resetMap,
+    resetAdForm: resetAdForm
   };
 
 })();

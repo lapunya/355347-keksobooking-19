@@ -1,8 +1,8 @@
 'use strict';
 (function () {
+  var ENTER_KEY = 'Enter';
   var map = document.querySelector('.map__pins'); // блок в который копируем объявления
   var mainPin = map.querySelector('.map__pin--main');
-  var ENTER_KEY = 'Enter';
 
   var onActiveMouse = function (evt) {
     evt.preventDefault();
@@ -42,6 +42,7 @@
         if (isMapBoundOver) {
           return;
         }
+
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
 

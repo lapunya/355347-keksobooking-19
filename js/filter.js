@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-  var mapFilters = document.querySelector('.map__filters');
+  var mapFiltersContainer = document.querySelector('.map__filters');
   var maxPinNumber = 5;
 
   var HousePrice = {
@@ -16,7 +16,7 @@
     var filteredAdvertisements = getFilterAdvertisements(advertisements, currentFilterValue);
     var cutAdvertisements = getRightAmountPins(filteredAdvertisements);
 
-    window.main.reset();
+    window.main.resetMap();
     window.pin.render(cutAdvertisements);
   };
 
@@ -112,16 +112,34 @@
     window.backend.download(onSuccessApiResponse, onErrorApiResponse);
   });
 
-  mapFilters.addEventListener('change', onChangeFilter);
+  mapFiltersContainer.addEventListener('change', onChangeFilter);
 
 
   var getRightAmountPins = function (data) {
     return data.slice(0, maxPinNumber);
   };
 
+  var resetFilters = function () {
+    var mapSelects = mapFiltersContainer.querySelectorAll('select');
+    var mapInputs = mapFiltersContainer.querySelectorAll('input');
+
+    mapSelects.forEach(function (item) {
+      if (item.value !== 'any') {
+        item.value = 'any';
+      }
+    });
+
+    mapInputs.forEach(function (item) {
+      if (item.checked) {
+        item.checked = false;
+      }
+    });
+  };
+
   window.filter = {
     getRightAmountPins: getRightAmountPins,
     onErrorApiResponse: onErrorApiResponse,
-    onSuccessApiResponse: onSuccessApiResponse
+    onSuccessApiResponse: onSuccessApiResponse,
+    reset: resetFilters
   };
 })();
