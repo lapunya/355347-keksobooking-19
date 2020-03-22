@@ -5,6 +5,9 @@
   var adForm = document.querySelector('.ad-form');
   var adFormFields = adForm.querySelectorAll('fieldset');
 
+  var mapFiltersContainer = map.querySelector('.map__filters');
+  var mapFilters = mapFiltersContainer.childNodes;
+
   var mainPin = document.querySelector('.map__pin--main');
   var MAIN_PIN_WIDTH = mainPin.offsetWidth;
   var MAIN_PIN_HEIGHT = mainPin.offsetHeight;
@@ -28,9 +31,13 @@
     mainPin.style.left = MAIN_PIN_INITIAL_X;
     mainPin.style.top = MAIN_PIN_INITIAL_Y;
 
-    for (var i = 0; i < adFormFields.length; i++) {
-      adFormFields[i].disabled = true;
-    }
+    adFormFields.forEach(function (item) {
+      item.disabled = true;
+    });
+
+    mapFilters.forEach(function (item) {
+      item.disabled = true;
+    });
 
     isSceneCreated = false;
   };
@@ -39,9 +46,13 @@
     adForm.classList.remove('ad-form--disabled');
     map.classList.remove('map--faded');
 
-    for (var i = 0; i < adFormFields.length; i++) {
-      adFormFields[i].disabled = false;
-    }
+    adFormFields.forEach(function (item) {
+      item.disabled = false;
+    });
+
+    mapFilters.forEach(function (item) {
+      item.disabled = true;
+    });
 
     inputAddress.value = mainPinX + ', ' + activeMainPinY;
   };
