@@ -22,8 +22,6 @@
   var inputAddress = document.querySelector('#address');
   var isSceneCreated = false;
 
-  inputAddress.value = mainPinX + ', ' + inactiveMainPinY; // заполнение поля адреса в неактивном состоянии
-
   var setInactiveState = function () { // неактивное состояние страницы
     adForm.classList.add('ad-form--disabled');
     map.classList.add('map--faded');
@@ -38,7 +36,7 @@
     mapFilters.forEach(function (item) {
       item.disabled = true;
     });
-
+    inputAddress.placeholder = mainPinX + ', ' + inactiveMainPinY; // заполнение поля адреса в неактивном состоянии
     isSceneCreated = false;
   };
 
@@ -54,7 +52,7 @@
       item.disabled = true;
     });
 
-    inputAddress.value = mainPinX + ', ' + activeMainPinY;
+    inputAddress.placeholder = mainPinX + ', ' + activeMainPinY; // заполнение поля адреса в активном состоянии
   };
 
   var createScene = function (advertisements) {
