@@ -14,7 +14,8 @@
       .filter(onChangeHousingType)
       .filter(onChangeHousingPrice)
       .filter(onChangeHousingGuests)
-      .filter(onChangeHousingRooms);
+      .filter(onChangeHousingRooms)
+      .filter(onChangeHousingFeatures);
 
     window.main.resetMap();
     window.pin.render(filteredAdvertisements);
@@ -81,12 +82,28 @@
     return advertisement.offer.guests === +housingGuestsValue;
   };
 
+  var features = mapFiltersContainer.querySelectorAll('input');
+  var newArray = [];
+
+  var onChangeHousingFeatures = function (advertisement) {
+    features.forEach(function (item) {
+      if (item.checked) {
+        newArray.push(item.value);
+      } else if (!(item.checked)) {
+        newArray.pop(item.value);
+      }
+    });
+
+    newArray.forEach(function (item) {
+      return advertisement.offer.features.includes(item.value);
+    });
+  };
+
   var onChangeFilter = window.util.debounce(function () {
     window.backend.download(onSuccessApiResponse, onErrorApiResponse);
   });
 
   mapFiltersContainer.addEventListener('change', onChangeFilter);
-
 
   var getRightAmountPins = function (data) {
     return data.slice(0, maxPinNumber);
