@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-  var mapFilters = document.querySelector('.map__filters');
+  var mapFiltersContainer = document.querySelector('.map__filters');
   var maxPinNumber = 5;
 
   var HousePrice = {
@@ -9,119 +9,124 @@
     high: '50000'
   };
 
-  var currentFilterValue;
-  var currentInputElement;
-
   var onSuccessApiResponse = function (advertisements) {
-    var filteredAdvertisements = getFilterAdvertisements(advertisements, currentFilterValue);
-    var cutAdvertisements = getRightAmountPins(filteredAdvertisements);
+    var filteredAdvertisements = advertisements
+      .filter(function (element) {
+        return onChangeHousingType(element) &&
+          onChangeHousingPrice(element) &&
+          onChangeHousingGuests(element) &&
+          onChangeHousingRooms(element) &&
+          onChangeHousingFeatures(element);
+      });
 
-    window.main.reset();
-    window.pin.render(cutAdvertisements);
+    var cutFilteredAdvertisements = getRightAmountPins(filteredAdvertisements);
+
+    window.main.resetMap();
+    window.pin.render(cutFilteredAdvertisements);
   };
 
   var onErrorApiResponse = function (errorMessage) {
     window.form.showErrorMessage(errorMessage);
   };
 
-  var getFilterAdvertisements = function (advertisements, value) {
-    if (value === 'any') {
-      return advertisements;
+  var housingType = mapFiltersContainer.querySelector('#housing-type');
+
+  var onChangeHousingType = function (advertisement) {
+    var housingValue = housingType.value;
+
+    if (housingValue === 'any') {
+      return advertisement;
     }
 
-    return applyFilter(advertisements, value);
+    return advertisement.offer.type === housingValue;
   };
 
-  var onChangeSelect = function (advertisements, value) {
-    var selectType = currentInputElement.getAttribute('data-select-type');
+  var housingPrice = mapFiltersContainer.querySelector('#housing-price');
 
-    switch (selectType) {
-      case 'type':
-        return advertisements.filter(function (item) {
-          return item.offer.type === value;
-        });
-      case 'guests':
-        return advertisements.filter(function (item) {
-          return item.offer.guests === +value;
-        });
-      case 'rooms':
-        return advertisements.filter(function (item) {
-          return item.offer.rooms === +value;
-        });
-      case 'price':
-        switch (value) {
-          case 'low':
-            return advertisements.filter(function (item) {
-              return item.offer.price <= HousePrice.low;
-            });
-          case 'middle':
-            return advertisements.filter(function (item) {
-              return item.offer.price >= HousePrice.low && item.offer.price < HousePrice.high;
-            });
-          case 'high':
-            return advertisements.filter(function (item) {
-              return item.offer.price >= HousePrice.high;
-            });
-          default:
-            return advertisements;
-        }
+  var onChangeHousingPrice = function (advertisement) {
+    var housingPriceValue = housingPrice.value;
+
+    if (housingPriceValue === 'any') {
+      return advertisement;
+    }
+
+    switch (housingPriceValue) {
+      case 'low':
+        return advertisement.offer.price <= HousePrice.low;
+      case 'middle':
+        return advertisement.offer.price >= HousePrice.low && advertisement.offer.price < HousePrice.high;
+      case 'high':
+        return advertisement.offer.price >= HousePrice.high;
       default:
-        return advertisements;
+        return advertisement;
     }
   };
 
-  var onChangeInput = function (advertisements, value) {
-    var inputType = currentInputElement.type;
+  var housingRooms = mapFiltersContainer.querySelector('#housing-rooms');
 
-    switch (inputType) {
-      case 'checkbox':
-        var checked = currentInputElement.checked;
+  var onChangeHousingRooms = function (advertisement) {
+    var housingRoomsValue = housingRooms.value;
 
-        if (checked) {
-          return advertisements.filter(function (item) {
-            return item.offer.features.includes(value);
-          });
-        } else {
-          return advertisements.filter(function (item) {
-            return !(item.offer.features.includes(value));
-          });
-        }
-      default:
-        return advertisements;
+    if (housingRoomsValue === 'any') {
+      return advertisement;
     }
+
+    return advertisement.offer.rooms === +housingRoomsValue;
   };
 
-  var applyFilter = function (advertisements, value) {
-    var inputTag = currentInputElement.tagName.toLowerCase();
+  var housingGuests = mapFiltersContainer.querySelector('#housing-guests');
 
-    switch (inputTag) {
-      case 'input':
-        return onChangeInput(advertisements, value);
-      case 'select':
-        return onChangeSelect(advertisements, value);
-      default:
-        return advertisements;
+  var onChangeHousingGuests = function (advertisement) {
+    var housingGuestsValue = housingGuests.value;
+
+    if (housingGuestsValue === 'any') {
+      return advertisement;
     }
+
+    return advertisement.offer.guests === +housingGuestsValue;
   };
 
-  var onChangeFilter = window.util.debounce(function (event) {
-    var target = event.target;
+  var features = mapFiltersContainer.querySelector('#housing-features');
 
-    currentInputElement = target;
-    currentFilterValue = target.value;
+  var onChangeHousingFeatures = function (currentElement) {
+    var checkedFeatures = features.querySelectorAll('input:checked');
+
+    return Array.from(checkedFeatures).every(function (currentCheckedFeature) {
+      return currentElement.offer.features.includes(currentCheckedFeature.value);
+    });
+  };
+
+  var onChangeFilter = window.util.debounce(function () {
     window.backend.download(onSuccessApiResponse, onErrorApiResponse);
   });
 
-  mapFilters.addEventListener('change', onChangeFilter);
-
+  mapFiltersContainer.addEventListener('change', onChangeFilter);
 
   var getRightAmountPins = function (data) {
     return data.slice(0, maxPinNumber);
   };
 
+  var resetFilters = function () {
+    var mapSelects = mapFiltersContainer.querySelectorAll('select');
+    var mapInputs = mapFiltersContainer.querySelectorAll('input');
+
+    mapSelects.forEach(function (item) {
+      if (item.value !== 'any') {
+        item.value = 'any';
+      }
+    });
+
+    mapInputs.forEach(function (item) {
+      if (item.checked) {
+        item.checked = false;
+      }
+    });
+  };
+
   window.filter = {
     getRightAmountPins: getRightAmountPins,
     onErrorApiResponse: onErrorApiResponse,
-    onSuccessApiResponse: onSuccessApiResponse
+    onSuccessApiResponse: onSuccessApiResponse,
+    reset: resetFilters
   };
 })();

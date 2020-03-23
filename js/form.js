@@ -28,10 +28,11 @@
     messageElement = successMessageTemplate;
 
     window.main.setInactiveState();
-    window.main.reset();
+    window.main.resetMap();
 
     mainPage.appendChild(successMessageTemplate);
     document.addEventListener('keydown', onMessageEscPress);
+    document.addEventListener('click', onMessageClick);
   };
 
   var onErrorApiResponse = function (errorMessage) {
@@ -60,10 +61,11 @@
 
   var onResetClick = function () {
     window.main.setInactiveState();
-    window.main.reset();
+    window.main.resetMap();
+    window.filter.reset();
   };
 
-  var validateRoomInputElement = function () {
+  var onChangeRoomsInput = function () {
     guestsArray.forEach(function (guest) {
       var roomsCount = +roomsInput.value;
       var guestValue = +guest.value;
@@ -109,9 +111,9 @@
   };
 
   var installForm = function () {
-    roomsInput.addEventListener('change', validateRoomInputElement);
+    roomsInput.addEventListener('change', onChangeRoomsInput);
 
-    validateRoomInputElement();
+    onChangeRoomsInput();
 
     houseTypeInput.addEventListener('input', function () { // функция валидации полей типа жилья и цены
       var houseType = window.util.getSelectedOption(houseTypeInput).value;
@@ -144,6 +146,8 @@
     adForm.addEventListener('submit', function (evt) {
       evt.preventDefault();
       window.backend.upload(new FormData(adForm), onSuccessApiResponse, onErrorApiResponse);
+      window.main.resetAdForm();
+      onResetClick();
     });
 
     adForm.addEventListener('reset', onResetClick);
