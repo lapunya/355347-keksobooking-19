@@ -11,14 +11,18 @@
 
   var onSuccessApiResponse = function (advertisements) {
     var filteredAdvertisements = advertisements
-      .filter(onChangeHousingType)
-      .filter(onChangeHousingPrice)
-      .filter(onChangeHousingGuests)
-      .filter(onChangeHousingRooms)
-      .filter(onChangeHousingFeatures);
+      .filter(function (element) {
+        return onChangeHousingType(element) &&
+          onChangeHousingPrice(element) &&
+          onChangeHousingGuests(element) &&
+          onChangeHousingRooms(element) &&
+          onChangeHousingFeatures(element);
+      });
+
+    var cutFilteredAdvertisements = getRightAmountPins(filteredAdvertisements);
 
     window.main.resetMap();
-    window.pin.render(filteredAdvertisements);
+    window.pin.render(cutFilteredAdvertisements);
   };
 
   var onErrorApiResponse = function (errorMessage) {
@@ -82,20 +86,13 @@
     return advertisement.offer.guests === +housingGuestsValue;
   };
 
-  var features = mapFiltersContainer.querySelectorAll('input');
-  var newArray = [];
+  var features = mapFiltersContainer.querySelector('#housing-features');
 
-  var onChangeHousingFeatures = function (advertisement) {
-    features.forEach(function (item) {
-      if (item.checked) {
-        newArray.push(item.value);
-      } else if (!(item.checked)) {
-        newArray.pop(item.value);
-      }
-    });
+  var onChangeHousingFeatures = function (currentElement) {
+    var checkedFeatures = features.querySelectorAll('input:checked');
 
-    newArray.forEach(function (item) {
-      return advertisement.offer.features.includes(item.value);
+    return Array.from(checkedFeatures).every(function (currentCheckedFeature) {
+      return currentElement.offer.features.includes(currentCheckedFeature.value);
     });
   };
 

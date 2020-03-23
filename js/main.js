@@ -35,6 +35,7 @@
 
     mapFilters.forEach(function (item) {
       item.disabled = true;
+      item.style = 'cursor: default';
     });
 
     inputAddress.placeholder = mainPinX + ', ' + inactiveMainPinY; // заполнение поля адреса в неактивном состоянии
@@ -51,6 +52,7 @@
 
     mapFilters.forEach(function (item) {
       item.disabled = false;
+      item.style = 'cursor: pointer';
     });
 
     inputAddress.placeholder = mainPinX + ', ' + activeMainPinY; // заполнение поля адреса в активном состоянии
@@ -81,21 +83,56 @@
     }
   };
 
-  var resetAdForm = function () {
-    var selectRoomsElement = document.querySelector('#room_number');
+  var resetSelectElements = function () {
+    var selectRoomsElement = adForm.querySelector('#room_number');
     var selectRoomsElementChildren = selectRoomsElement.children;
-    var defaultSelectedOption = Array.from(selectRoomsElementChildren).find(function (option) {
+    var defaultRoomSelectedOption = Array.from(selectRoomsElementChildren).find(function (option) {
       return option.value === '1';
     });
 
-    defaultSelectedOption.selected = true;
+    var selectTypesElement = adForm.querySelector('#type');
+    var selectTypesElementChildren = selectTypesElement.children;
+    var defaultTypeSelectedOption = Array.from(selectTypesElementChildren).find(function (option) {
+      return option.value === 'flat';
+    });
 
+    var selectGuestsElement = adForm.querySelector('#capacity');
+    var selectGuestsElementChildren = selectGuestsElement.children;
+    var defaultGuestSelectedOption = Array.from(selectGuestsElementChildren).find(function (option) {
+      return option.value === '1';
+    });
+
+    var selectTimeinElement = adForm.querySelector('#timein');
+    var selectTimeinElementChildren = selectTimeinElement.children;
+    var defaultTimeinSelectedOption = Array.from(selectTimeinElementChildren).find(function (option) {
+      return option.value === '12:00';
+    });
+
+    var selectTimeoutElement = adForm.querySelector('#timeout');
+    var selectTimeoutElementChildren = selectTimeoutElement.children;
+    var defaultTimeoutSelectedOption = Array.from(selectTimeoutElementChildren).find(function (option) {
+      return option.value === '12:00';
+    });
+
+    defaultRoomSelectedOption.selected = true;
+    defaultTypeSelectedOption.selected = true;
+    defaultGuestSelectedOption.selected = true;
+
+    defaultTimeinSelectedOption.selected = true;
+    defaultTimeoutSelectedOption.selected = true;
+  };
+
+  var resetAdForm = function () {
     adForm.querySelectorAll('input').forEach(function (item) {
       if (item.type === 'checkbox') {
         item.checked = false;
       }
       item.value = '';
     });
+
+    adForm.querySelector('#description').value = '';
+
+    resetSelectElements();
   };
 
   var fetchApiData = function () {

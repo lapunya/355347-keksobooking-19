@@ -32,6 +32,7 @@
 
     mainPage.appendChild(successMessageTemplate);
     document.addEventListener('keydown', onMessageEscPress);
+    document.addEventListener('click', onMessageClick);
   };
 
   var onErrorApiResponse = function (errorMessage) {
@@ -64,7 +65,7 @@
     window.filter.reset();
   };
 
-  var validateRoomInputElement = function () {
+  var onChangeRoomsInput = function () {
     guestsArray.forEach(function (guest) {
       var roomsCount = +roomsInput.value;
       var guestValue = +guest.value;
@@ -110,9 +111,9 @@
   };
 
   var installForm = function () {
-    roomsInput.addEventListener('change', validateRoomInputElement);
+    roomsInput.addEventListener('change', onChangeRoomsInput);
 
-    validateRoomInputElement();
+    onChangeRoomsInput();
 
     houseTypeInput.addEventListener('input', function () { // функция валидации полей типа жилья и цены
       var houseType = window.util.getSelectedOption(houseTypeInput).value;

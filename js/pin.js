@@ -49,17 +49,17 @@
           (function () {
             currentCard = map.querySelector('.map__card');
 
-            var closeCard = function () {
+            var onCloseCardClick = function () {
               currentCard.remove();
-              closeButton.removeEventListener('click', closeCard);
+              closeButton.removeEventListener('click', onCloseCardClick);
               document.removeEventListener('keydown', onEscPress);
             };
 
             var onEscPress = function (evt) {
-              window.util.isEscPress(evt, closeCard);
+              window.util.isEscPress(evt, onCloseCardClick);
             };
 
-            closeButton.addEventListener('click', closeCard);
+            closeButton.addEventListener('click', onCloseCardClick);
             document.addEventListener('keydown', onEscPress);
           })();
         };
